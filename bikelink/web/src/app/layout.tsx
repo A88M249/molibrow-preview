@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import "@fontsource-variable/plus-jakarta-sans";
+import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
 import { CartProvider } from "@/components/CartProvider";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";

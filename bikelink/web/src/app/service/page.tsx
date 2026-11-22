@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LIFE } from "@/lib/life";
 import { Faq, PageHero, Steps } from "@/components/Blocks";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbLd } from "@/lib/seo";
@@ -20,7 +21,7 @@ export default function Service() {
   return (
     <>
       <JsonLd data={breadcrumbLd([{ name: "Forside", path: "/" }, { name: "Service og garanti", path: "/service" }])} />
-      <PageHero eyebrow="Trygg handel hos BikeLink.no" title="Service, garanti og reklamasjon" lead="En samlet oversikt over garanti og reklamasjon for sykler, rammesett og komponenter kjøpt hos BikeLink.no – og hvor du får service.">
+      <PageHero photo={LIFE.frameDetail} position="50% 50%" eyebrow="Trygg handel hos BikeLink.no" title="Service, garanti og reklamasjon" lead="En samlet oversikt over garanti og reklamasjon for sykler, rammesett og komponenter kjøpt hos BikeLink.no – og hvor du får service.">
         <a className="btn" href="mailto:info@bikelink.no?subject=Garanti%2Freklamasjon">Meld en sak</a>
         <a className="btn ghost" href="https://app.spokesworkshop.com/book/bikelink">Bestill verksted</a>
       </PageHero>

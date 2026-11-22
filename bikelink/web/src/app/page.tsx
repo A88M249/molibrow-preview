@@ -1,86 +1,88 @@
 import Image from "next/image";
 import Link from "next/link";
+import { PhotoCard } from "@/components/Blocks";
+import { LifeImage } from "@/components/LifeImage";
 import { ProductCard } from "@/components/ProductCard";
-import { CATEGORIES, CATEGORY_IDS, inCategory, isAvailable, kr, priceRange, products } from "@/lib/products";
+import { Slider } from "@/components/Slider";
 import { CITIES } from "@/lib/dealers";
+import { LIFE } from "@/lib/life";
+import { CATEGORIES, CATEGORY_IDS, inCategory, isAvailable, kr, priceRange, products } from "@/lib/products";
 
 const firstAvailable = (c: (typeof CATEGORY_IDS)[number]) => inCategory(c).find((p) => isAvailable(p) && !p.needsReview) ?? inCategory(c)[0];
 
 export default function Home() {
-  const hero = firstAvailable("landevei");
-  const heroImg = hero.images[0];
-  const picks = products.filter((p) => isAvailable(p) && !p.needsReview).slice(0, 8);
-  const lowest = Math.min(...products.map((p) => priceRange(p).low));
+  const feature = firstAvailable("landevei");
+  const picks = products.filter((p) => isAvailable(p) && !p.needsReview).slice(0, 12);
 
   return (
     <>
-      <section className="hero">
-        <div className="wrap hero-grid">
-          <div className="hero-copy">
-            <p className="eyebrow">Offisiell importør av MMR Bikes</p>
+      <section className="hero-full">
+        <LifeImage photo={LIFE.mountains} priority position="50% 35%" />
+        <div className="hero-shade" />
+        <div className="wrap hero-captions">
+          <div className="cap">
+            <p className="mono">Offisiell importør av MMR Bikes</p>
             <h1>Spansk ingeniørkunst. Klar for norske veier og stier.</h1>
-            <p className="lead">Landevei, gravel, terreng og el. Kjøp online og hent ferdig montert hos din nærmeste MMR-forhandler.</p>
-            <div className="btn-row">
-              <Link className="btn" href="/landevei">Se alle sykler</Link>
-              <Link className="btn ghost" href="/forhandlere">Finn forhandler</Link>
-            </div>
-            <p className="small muted hero-note">{products.length} modeller · fra {kr(lowest)} · frakt inkludert</p>
+            <Link className="pill" href="/landevei" aria-label="Se alle sykler">Se alle sykler <span>→</span></Link>
           </div>
-          <div className="hero-img">
-            <Image src={heroImg.src} alt={heroImg.alt ?? hero.title} width={heroImg.width} height={heroImg.height} priority sizes="(max-width:900px) 100vw, 55vw" />
-            <Link href={`/sykkel/${hero.handle}`} className="hero-tag"><strong>{hero.title.replace(/^MMR\s+/, "")}</strong><span>Fra {kr(priceRange(hero).low)} →</span></Link>
+          <div className="cap right">
+            <h2>{feature.title.replace(/^MMR\s+/, "")}</h2>
+            <p className="mono">MMR Bikes® · fra {kr(priceRange(feature).low)}</p>
+            <Link className="pill" href={`/sykkel/${feature.handle}`} aria-label={`Se ${feature.title}`}><span>→</span></Link>
           </div>
-        </div>
-      </section>
-
-      <section className="usp">
-        <div className="wrap usp-row">
-          <span>Offisiell MMR-importør</span><span>Ferdig montert</span><span>Hent hos forhandler</span><span>Betal med kort, Klarna eller Vipps</span>
         </div>
       </section>
 
       <section className="wrap section">
-        <div className="section-head"><h2>Velg sykkeltype</h2></div>
+        <div className="section-head"><h2>Velg sykkeltype</h2><span className="mono muted">{products.length} modeller</span></div>
         <div className="tiles">
           {CATEGORY_IDS.map((c) => {
             const p = firstAvailable(c);
             const img = p.images[0];
             return (
               <Link key={c} href={`/${c}`} className="tile">
-                <span className="tile-name">{CATEGORIES[c].name}</span>
-                <small>{inCategory(c).length} modeller</small>
+                <span className="mono">+ {CATEGORIES[c].name}</span>
                 <Image src={img.src} alt="" width={img.width} height={img.height} sizes="(max-width:700px) 50vw, 20vw" />
+                <small className="mono muted">{inCategory(c).length} modeller</small>
               </Link>
             );
           })}
         </div>
       </section>
 
-      <section className="wrap section">
-        <div className="section-head"><h2>På lager nå</h2><Link href="/landevei" className="more">Se hele utvalget →</Link></div>
-        <div className="grid">{picks.map((p, i) => <ProductCard key={p.handle} p={p} priority={i < 4} />)}</div>
-      </section>
-
-      <section className="band">
-        <div className="wrap">
-          <p className="eyebrow light">Fra klikk til første tur</p>
-          <h2>Kjøp på nett – hent lokalt</h2>
-          <ol className="steps dark">
-            <li><span className="num">01</span><strong>Velg sykkel</strong><p>Se spesifikasjoner, geometri og størrelsesguide.</p></li>
-            <li><span className="num">02</span><strong>Velg utleveringssted</strong><p>Hent sykkelen hos en MMR-forhandler nær deg.</p></li>
-            <li><span className="num">03</span><strong>Ferdig montert</strong><p>Montert og kontrollert før den leveres.</p></li>
-            <li><span className="num">04</span><strong>Service etterpå</strong><p>Hos autoriserte verkstedpartnere.</p></li>
-          </ol>
-          <div className="btn-row">
-            <Link className="btn light" href="/forhandlere">Finn forhandler</Link>
-            <span className="cities">{CITIES.join(" · ")}</span>
-          </div>
+      <section className="editorial">
+        <div className="editorial-img"><LifeImage photo={LIFE.hilltop} position="60% 50%" sizes="(max-width:900px) 100vw, 55vw" /></div>
+        <div className="editorial-copy">
+          <p className="mono">MMR Bikes®</p>
+          <h2>Fra Asturias, med røtter i konkurransesykling</h2>
+          <p>MMR er et spansk sykkelmerke som lager landeveissykler, gravelsykler, terrengsykler, elsykler og barnesykler. BikeLink er offisiell importør og distributør i Norge.</p>
+          <Link className="btn ghost" href="/om-oss">Om BikeLink</Link>
         </div>
       </section>
 
-      <section className="wrap section split">
-        <Link href="/service" className="feature"><p className="eyebrow">Trygghet</p><h3>Service og garanti</h3><p>Reklamasjon i opptil 5 år på sykler, produsentgaranti og verkstedpartnere over hele landet.</p><span className="more">Les mer →</span></Link>
-        <Link href="/om-oss" className="feature"><p className="eyebrow">Om oss</p><h3>Dette er BikeLink.no</h3><p>Offisiell MMR-distributør som kombinerer netthandel med montering, utlevering og service hos partnere.</p><span className="more">Møt BikeLink →</span></Link>
+      <Slider title="På lager nå" link={<Link href="/landevei" className="mono more">Se hele utvalget →</Link>}>
+        {picks.map((p, i) => <div className="slide" key={p.handle}><ProductCard p={p} priority={i < 4} /></div>)}
+      </Slider>
+
+      <section className="hero-full band-photo">
+        <LifeImage photo={LIFE.curve} position="60% 50%" />
+        <div className="hero-shade strong" />
+        <div className="wrap band-body">
+          <p className="mono">Fra klikk til første tur</p>
+          <h2>Kjøp på nett – hent lokalt</h2>
+          <ol className="steps-line">
+            <li><span className="mono">01</span><strong>Velg sykkel</strong><p>Spesifikasjoner, geometri og størrelsesguide.</p></li>
+            <li><span className="mono">02</span><strong>Velg utleveringssted</strong><p>Hent hos en MMR-forhandler nær deg.</p></li>
+            <li><span className="mono">03</span><strong>Ferdig montert</strong><p>Montert og kontrollert før den leveres.</p></li>
+            <li><span className="mono">04</span><strong>Service etterpå</strong><p>Hos autoriserte verkstedpartnere.</p></li>
+          </ol>
+          <div className="btn-row"><Link className="btn light" href="/forhandlere">Finn forhandler</Link><span className="mono">{CITIES.join(" · ")}</span></div>
+        </div>
+      </section>
+
+      <section className="wrap section photo-pair">
+        <PhotoCard photo={LIFE.aelionDetail} href="/service" label="Trygghet" title="Service og garanti" position="50% 50%" />
+        <PhotoCard photo={LIFE.face} href="/forhandlere" label="Forhandlere" title="Se og prøv hos en MMR-partner" position="50% 40%" />
       </section>
 
       <section className="wrap section prose">
