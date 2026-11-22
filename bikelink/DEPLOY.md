@@ -36,7 +36,8 @@ Names: site `bikelink.no` / `www.bikelink.no`, API `api.bikelink.no`, preview `n
    psql "$DATABASE_URL" -f backend/sql/schema.sql
    cd backend && DATABASE_URL=... npm run seed
    ```
-5. Real stock: `PUT https://api.bikelink.no/admin/stock/<sku>` with `{"stock": n}` and `Authorization: Bearer <ADMIN_TOKEN>`.
+5. Real stock and dealer prices: open `https://bikelink.no/admin` (paste `ADMIN_TOKEN`) → *Lager og priser* (edit stock per SKU, import the wholesale price list).
+   First dealers: *B2B-kontoer* → approve applications (the invite link is shown if email is not set up yet).
 6. In Railway add custom domain `api.bikelink.no`; in Cloudflare DNS add the CNAME Railway shows, **DNS only** (grey cloud).
 
 ## 3. Payments
@@ -84,6 +85,8 @@ While previewing, the site is indexable only on the final domain: set `NEXT_PUBL
 These exist only on Shopify and will 404 on the new domain until rebuilt: `/pages/b2b`, `/pages/bike-exchange`,
 `/policies/terms-of-service`, `/policies/refund-policy`, `/policies/shipping-policy`, `/policies/privacy-policy`, `/policies/legal-notice`.
 The footer links to them. **Rebuild them before step 6** – terms, returns, shipping, privacy and cookies are required for a Norwegian web shop.
+
+*(Update: all of these are rebuilt in the new site and redirect from the old URLs; the B2B portal is now `/b2b` with login at `/b2b/logg-inn`.)*
 
 ## Costs (check current prices)
 Cloudflare Free covers DNS/CDN; Workers has a free allowance and a low-cost paid plan for more traffic. Railway/Fly are usage-based

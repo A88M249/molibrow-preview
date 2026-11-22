@@ -22,6 +22,7 @@ export function Footer() {
           <Link href="/sykkelinnbytte">Sykkelinnbytte</Link>
           <Link href="/kontakt">Kontakt oss</Link>
           <Link href="/b2b">Bli forhandler (B2B)</Link>
+          <Link href="/b2b/logg-inn">Forhandlerportal</Link>
         </div>
         <div>
           <strong>Retningslinjer</strong>

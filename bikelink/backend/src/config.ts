@@ -8,6 +8,9 @@ const opt = (name: string): string | undefined => process.env[name] || undefined
 
 export const config = {
   adminToken: opt("ADMIN_TOKEN"),
+  // Signs dealer login tokens. Without it the B2B portal is disabled (503).
+  jwtSecret: opt("JWT_SECRET"),
+  b2bNotifyEmail: opt("B2B_NOTIFY_EMAIL") ?? "info@bikelink.no",
   // Browsers may call the API from the main site and from preview/www hosts (comma-separated).
   corsOrigins: [process.env.SITE_URL, ...(process.env.ALLOWED_ORIGINS ?? "").split(",")].map((o) => o?.trim().replace(/\/$/, "")).filter((o): o is string => Boolean(o)),
   mail: { smtpUrl: opt("SMTP_URL"), from: opt("MAIL_FROM") ?? "BikeLink <info@bikelink.no>" },

@@ -8,15 +8,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/b2b" },
 };
 
-const APPLY = "mailto:info@bikelink.no?subject=" + encodeURIComponent("Søknad om B2B-konto") + "&body=" +
-  encodeURIComponent("Firmanavn:\nOrg.nr.:\nKontaktperson:\nTelefon:\nAdresse:\nType virksomhet (sykkelbutikk, verksted, e-handel …):\nNettside:\n");
+const APPLY = "/b2b/soknad";
 
 export default function B2B() {
   return (
     <>
       <PageHero photo={LIFE.roadRidge} position="50% 45%" eyebrow="BikeLink.no B2B-portal" title="Bli MMR-forhandler" lead="BikeLink.no er offisiell distributør av MMR Bikes i Norge og leverer sykler, rammesett og originale reservedeler til autoriserte forhandlere over hele landet.">
         <a className="btn" href={APPLY}>Søk om B2B-konto</a>
-        <a className="btn ghost" href="/kontakt">Kontakt oss</a>
+        <a className="btn ghost" href="/b2b/logg-inn">Logg inn</a>
       </PageHero>
       <section className="wrap section">
         <h2>Hva du får som partner</h2>
@@ -28,9 +27,9 @@ export default function B2B() {
         </div>
       </section>
       <Steps title="Slik blir du forhandler" items={[
-        { t: "Send søknad", d: "Send oss firmaopplysninger på e-post (knappen over fyller ut en mal)." },
+        { t: "Send søknad", d: "Fyll ut søknadsskjemaet med firmaopplysninger." },
         { t: "Manuell behandling", d: "Alle søknader behandles manuelt for å sikre riktig tilgang og prisstruktur." },
-        { t: "Full tilgang", d: "Når kontoen er godkjent, får du tilgang til sortiment, priser, lagerstatus og ordreoversikt." },
+        { t: "Full tilgang", d: "Når kontoen er godkjent, får du en lenke for å opprette passord – og tilgang til sortiment, priser, lagerstatus og ordreoversikt." },
       ]} />
       <section className="wrap section">
         <div className="cta"><div><h2>Søk om B2B-konto</h2><p><strong>Hvem kan registrere seg:</strong> sykkelbutikker, verksteder, forhandlere, distribusjonspartnere og kommersiell e-handel.</p></div><a className="btn light" href={APPLY}>Send søknad</a></div>

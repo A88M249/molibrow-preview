@@ -5,6 +5,18 @@ import { pool } from "./db.js";
 
 const kr = (ore: number) => `${new Intl.NumberFormat("nb-NO").format(Math.round(ore / 100)).replace(/ /g, " ")} kr`;
 
+/** Sends a plain-text email. Returns false (and never throws) if SMTP is not configured or sending fails. */
+export async function sendMail(to: string, subject: string, text: string): Promise<boolean> {
+  if (!config.mail.smtpUrl) return false;
+  try {
+    await nodemailer.createTransport(config.mail.smtpUrl).sendMail({ from: config.mail.from, to, subject, text });
+    return true;
+  } catch (err) {
+    console.error("email failed", subject, err);
+    return false;
+  }
+}
+
 /** Sends the order confirmation. Does nothing (and never throws) if SMTP_URL is not configured. */
 export async function sendOrderConfirmation(orderId: string): Promise<void> {
   if (!config.mail.smtpUrl) return;

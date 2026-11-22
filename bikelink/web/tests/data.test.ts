@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
+import { parsePriceList } from "../src/lib/b2b";
 import { CATEGORY_IDS, allProducts, describe, inCategory, kr, listed, products, siblings } from "../src/lib/products";
 
 const INTERNAL = /\bSKU\b|lager \d|Shopify|utkast|Fargevei/i;
@@ -37,7 +38,7 @@ test("prices are formatted the Norwegian way", () => {
 });
 
 test("redirects point to real routes", () => {
-  const ok = new Set(["/", "/forhandlere", "/service", "/om-oss", "/kontakt", "/handlekurv", "/b2b", "/sykkelinnbytte", "/vilkar", "/angrerett", "/frakt", "/personvern", "/juridisk", ...CATEGORY_IDS.map((c) => `/${c}`)]);
+  const ok = new Set(["/", "/forhandlere", "/service", "/om-oss", "/kontakt", "/handlekurv", "/b2b", "/b2b/soknad", "/b2b/logg-inn", "/sykkelinnbytte", "/vilkar", "/angrerett", "/frakt", "/personvern", "/juridisk", ...CATEGORY_IDS.map((c) => `/${c}`)]);
   const redirects: { source: string; destination: string }[] = JSON.parse(readFileSync(new URL("../data/redirects.json", import.meta.url), "utf8"));
   assert.ok(redirects.length > 20);
   for (const r of redirects) assert.ok(ok.has(r.destination.split("#")[0]), `${r.source} -> ${r.destination}`);
@@ -49,4 +50,10 @@ test("legal pages were imported and contain no raw HTML or scripts", () => {
     assert.ok(doc.title && doc.blocks.length > 5, slug);
     assert.ok(!/<\/?(script|iframe|style)\b/i.test(JSON.stringify(doc)), `${slug} contains markup`);
   }
+});
+
+test("price list import: semicolon/tab separated, decimal comma or point, header skipped", () => {
+  const r = parsePriceList("SKU;Pris\n082699;18500\n080755;21 990,50\n080756\t1999.9\nbad;abc\n;100\n");
+  assert.deepEqual(r.prices, [{ sku: "082699", priceOre: 1850000 }, { sku: "080755", priceOre: 2199050 }, { sku: "080756", priceOre: 199990 }]);
+  assert.equal(r.skipped, 3);
 });

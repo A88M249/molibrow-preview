@@ -77,6 +77,24 @@ CI: `.github/workflows/bikelink.yml`.
 - **Frakt**: carriers listed (Posten, PostNord, FedEx, DHL) – confirm they match what you will actually use.
 Have these read by whoever is responsible for legal/compliance.
 
+## B2B dealer portal and back-office
+**Dealers** (`/b2b`): apply at `/b2b/soknad` → staff approve in `/admin` and set a discount % → dealer gets an email link to choose a password
+(`/b2b/aktiver`, valid 7 days, single use) → logs in at `/b2b/logg-inn` → `/b2b/portal`: catalogue with the dealer's prices **excl. VAT**,
+live stock, order form (reference, delivery address, note), order history. Orders reserve stock at once; settlement is by invoice (no online payment).
+Forgot password: `/b2b/glemt`.
+
+**Prices:** `retail incl. VAT ÷ 1.25 × (1 − dealer discount)`, unless a wholesale price exists for the SKU (override). Load a real price list in
+`/admin` → *Lager og priser* → *Importer prisliste* (`SKU;price in kr excl. VAT` per line, semicolon or tab).
+
+**Back-office** (`/admin`, not indexed): paste `ADMIN_TOKEN` once per browser tab. Tabs: B2B accounts (approve / reject / change discount / re-invite),
+B2B orders (confirm → shipped / cancel returns stock), web-shop orders (mark shipped), stock and wholesale prices.
+If email (`SMTP_URL`) is not set up, the approve step shows the invite link so you can send it yourself.
+
+Security notes: passwords are scrypt-hashed; login tokens are HS256 JWTs valid 12 h, kept in sessionStorage; closing an account blocks its token immediately;
+login/apply/forgot are rate limited; forgot-password never reveals whether an email exists; `/admin` is only as strong as `ADMIN_TOKEN` (long random value) –
+for staff with individual logins, add accounts before the team grows.
+Env: `JWT_SECRET` (required for B2B), `B2B_NOTIFY_EMAIL` (default info@bikelink.no).
+
 ## Not migrated (needs a decision)
-- **B2B portal**: the live B2B sign-up and wholesale prices run on a Shopify app (wholesale registration). The new `/b2b` page takes applications by email; a real dealer portal (login, wholesale prices, stock, orders) still has to be built or replaced.
+- **Multiple users per dealer / credit limits / payment terms / returns**: one login per dealer account for now.
 - **People photos**: dealer/staff portraits on the old site were not copied (photos of identifiable people – get permission first).
