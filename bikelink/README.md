@@ -35,3 +35,12 @@ npm run dev
 ```
 SEO / AI-search features: JSON-LD (Organization, WebSite, Product+Offer, BreadcrumbList, CollectionPage/ItemList),
 canonical URLs, sitemap.xml, robots.txt (AI crawlers allowed), `/llms.txt`, Google Merchant feed `/feed.xml`.
+
+## 360° product view
+Put a numbered image sequence in `web/public/spin/<product-handle>/` (`01.webp` … `36.webp`, 24–36 frames, same framing, bike centred
+on a plain background). The product page then shows a drag / swipe / arrow-key viewer automatically. No folder = normal gallery.
+
+## Checkout wiring
+Cart (browser) → `POST {NEXT_PUBLIC_API_URL}/checkout` with `{ provider, email, delivery, items: [{ sku, quantity }] }`.
+The backend re-prices every SKU from Postgres. Load the catalogue with `cd backend && npm run seed`.
+Seed sets stock to 1 for available variants (Shopify's public feed has no stock counts) – load real stock before launch.

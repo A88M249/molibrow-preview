@@ -34,6 +34,18 @@ const res = await fetch(`${SOURCE}/products.json?limit=250`);
 if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
 const { products } = await res.json();
 
+// The cart and checkout use the SKU as the key, so it must be unique and non-empty.
+// Shopify has gaps (no SKU) and duplicates (same SKU on two products): fix those here and report them.
+const seenSku = new Set();
+const skuIssues = [];
+function uniqueSku(handle, sku, size) {
+  let out = sku || `${handle}-${size ?? "std"}`;
+  if (!sku) skuIssues.push(`missing SKU: ${handle} [${size}] -> ${out}`);
+  else if (seenSku.has(out)) { out = `${sku}-${handle}`; skuIssues.push(`duplicate SKU ${sku}: ${handle} [${size}] -> ${out}`); }
+  seenSku.add(out);
+  return out;
+}
+
 const out = [];
 for (const p of products) {
   const category = CATEGORY_BY_TYPE[p.product_type];
@@ -53,7 +65,7 @@ for (const p of products) {
     colour: p.variants[0] ? (variantOpt(p.variants[0], "farge") ?? variantOpt(p.variants[0], "color")) : null,
     images: p.images.slice(0, 6).map((i) => ({ src: i.src, width: i.width, height: i.height, alt: i.alt })),
     variants: p.variants.map((v) => ({
-      sku: v.sku,
+      sku: uniqueSku(p.handle, v.sku, variantOpt(v, "størrelse")),
       size: variantOpt(v, "størrelse"),
       priceOre: Math.round(parseFloat(v.price) * 100),
       compareAtOre: v.compare_at_price ? Math.round(parseFloat(v.compare_at_price) * 100) : null,
@@ -63,3 +75,4 @@ for (const p of products) {
 }
 await writeFile(new URL("../data/products.json", import.meta.url), JSON.stringify(out));
 console.log(`Wrote ${out.length} products`);
+if (skuIssues.length) console.warn(`\n${skuIssues.length} SKU problems fixed in the export (fix them in Shopify too):\n  ` + skuIssues.join("\n  "));

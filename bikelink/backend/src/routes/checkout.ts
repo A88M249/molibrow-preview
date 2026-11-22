@@ -7,18 +7,22 @@ import { createVippsPayment } from "../payments/vipps.js";
 const body = z.object({
   provider: z.enum(["stripe", "vipps"]),
   email: z.string().email(),
-  items: z.array(z.object({ productId: z.number().int(), quantity: z.number().int().min(1).max(20) })).min(1),
+  delivery: z.discriminatedUnion("method", [
+    z.object({ method: z.literal("home") }),
+    z.object({ method: z.literal("dealer"), dealerId: z.string().min(1) }),
+  ]).default({ method: "home" }),
+  items: z.array(z.object({ sku: z.string().min(1), quantity: z.number().int().min(1).max(20) })).min(1),
 });
 
 export async function checkoutRoutes(app: FastifyInstance) {
   app.post("/checkout", async (req, reply) => {
     const input = body.safeParse(req.body);
     if (!input.success) return reply.code(400).send({ error: input.error.flatten() });
-    const { provider, email, items } = input.data;
+    const { provider, email, items, delivery } = input.data;
 
     try {
       const lines = await priceCart(items);
-      const order = await createOrder(provider, email, lines);
+      const order = await createOrder(provider, email, lines, delivery);
 
       if (provider === "stripe") {
         const s = await createStripeSession(order.id, email, lines);

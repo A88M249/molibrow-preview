@@ -15,9 +15,14 @@ export const organizationLd = json({
   "@id": abs("/#org"),
   name: SITE_NAME,
   url: SITE_URL,
+  legalName: "BikeLink AS",
   description: "BikeLink er offisiell importør og distributør av MMR Bikes i Norge.",
+  logo: abs("/logo.png"),
   brand: { "@type": "Brand", name: "MMR Bikes" },
   areaServed: "NO",
+  email: "info@bikelink.no",
+  telephone: "+4746411906",
+  address: { "@type": "PostalAddress", streetAddress: "Prost Krags veg 29", postalCode: "2080", addressLocality: "Eidsvoll", addressCountry: "NO" },
 });
 
 export const websiteLd = json({
@@ -78,4 +83,11 @@ export const collectionLd = (c: CategoryId, items: Product[]) =>
       numberOfItems: items.length,
       itemListElement: items.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: abs(productPath(p)), name: p.title })),
     },
+  });
+
+export const faqLd = (items: { q: string; a: string }[]) =>
+  json({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((i) => ({ "@type": "Question", name: i.q, acceptedAnswer: { "@type": "Answer", text: i.a } })),
   });

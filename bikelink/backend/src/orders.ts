@@ -1,20 +1,19 @@
 import { pool } from "./db.js";
 
-export type CartLine = { productId: number; quantity: number };
-export type PricedLine = CartLine & { name: string; priceOre: number };
+export type CartLine = { sku: string; quantity: number };
+export type PricedLine = CartLine & { productId: number; name: string; priceOre: number };
 
 /** Look up real prices; reject unknown, inactive or out-of-stock items. */
 export async function priceCart(cart: CartLine[]): Promise<PricedLine[]> {
-  const ids = cart.map((l) => l.productId);
   const { rows } = await pool.query(
-    "SELECT id, name, price_ore, stock FROM products WHERE active AND id = ANY($1)",
-    [ids],
+    "SELECT id, sku, name, size, price_ore, stock FROM products WHERE active AND sku = ANY($1)",
+    [cart.map((l) => l.sku)],
   );
   return cart.map((line) => {
-    const p = rows.find((r) => r.id === line.productId);
-    if (!p) throw new Error(`Product ${line.productId} not available`);
-    if (p.stock < line.quantity) throw new Error(`Not enough stock for ${p.name}`);
-    return { ...line, name: p.name, priceOre: p.price_ore };
+    const p = rows.find((r) => r.sku === line.sku);
+    if (!p) throw new Error(`Product ${line.sku} not available`);
+    if (p.stock < line.quantity) throw new Error(`Not enough stock for ${p.name}${p.size ? ` (${p.size})` : ""}`);
+    return { ...line, productId: p.id, name: p.size ? `${p.name} – ${p.size}` : p.name, priceOre: p.price_ore };
   });
 }
 
@@ -22,14 +21,15 @@ export async function createOrder(
   provider: "stripe" | "vipps",
   email: string,
   lines: PricedLine[],
+  delivery: { method: "home" | "dealer"; dealerId?: string } = { method: "home" },
 ): Promise<{ id: string; totalOre: number }> {
   const totalOre = lines.reduce((s, l) => s + l.priceOre * l.quantity, 0);
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
     const { rows } = await client.query(
-      "INSERT INTO orders (provider, email, total_ore) VALUES ($1,$2,$3) RETURNING id",
-      [provider, email, totalOre],
+      "INSERT INTO orders (provider, email, total_ore, delivery_method, dealer_id) VALUES ($1,$2,$3,$4,$5) RETURNING id",
+      [provider, email, totalOre, delivery.method, delivery.dealerId ?? null],
     );
     for (const l of lines) {
       await client.query(

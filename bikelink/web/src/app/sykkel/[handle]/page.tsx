@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { LINKS } from "@/components/Chrome";
+import { BuyPanel } from "@/components/BuyPanel";
+import { Spin360 } from "@/components/Spin360";
+import { spinFrames } from "@/lib/spin";
 import { JsonLd } from "@/components/JsonLd";
 import { ProductCard } from "@/components/ProductCard";
 import { CATEGORIES, byHandle, compareAt, isAvailable, kr, priceRange, productSummary, products } from "@/lib/products";
@@ -39,6 +41,7 @@ export default async function ProductPage({ params }: Props) {
   const { low, high } = priceRange(p);
   const was = compareAt(p);
   const text = p.description || productSummary(p);
+  const frames = spinFrames(p.handle);
   const siblings = products.filter((x) => x.family === p.family && x.handle !== p.handle && x.category === p.category).slice(0, 4);
 
   return (
@@ -47,10 +50,17 @@ export default async function ProductPage({ params }: Props) {
       <JsonLd data={breadcrumbLd([{ name: "Forside", path: "/" }, { name: cat.name, path: categoryPath(p.category) }, { name: p.title, path: productPath(p) }])} />
       <nav className="crumbs" aria-label="Brødsmulesti"><Link href="/">Forside</Link> / <Link href={categoryPath(p.category)}>{cat.name}</Link> / {p.title.replace(/^MMR\s+/, "")}</nav>
 
+      <div className="subnav" aria-label="På denne siden">
+        <strong>{p.title.replace(/^MMR\s+/, "")}</strong>
+        <nav><a href="#storrelse">Størrelse</a><a href="#beskrivelse">Beskrivelse</a><a href="#flere">Flere modeller</a></nav>
+        <span className="price">{kr(low)}</span>
+      </div>
+
       <div className="pdp">
         <div className="gallery">
+          {frames.length >= 8 && <div className="gallery-spin"><Spin360 frames={frames} alt={p.title} /></div>}
           {p.images.map((img, i) => (
-            <Image key={img.src} src={img.src} alt={img.alt ?? `${p.title} – bilde ${i + 1}`} width={img.width} height={img.height} priority={i === 0} sizes="(max-width:900px) 100vw, 55vw" />
+            <Image key={img.src} src={img.src} alt={img.alt ?? `${p.title} – bilde ${i + 1}`} width={img.width} height={img.height} priority={i === 0 && frames.length < 8} sizes="(max-width:900px) 100vw, 55vw" className={i === 0 && frames.length < 8 ? "wide" : ""} />
           ))}
         </div>
 
@@ -60,32 +70,23 @@ export default async function ProductPage({ params }: Props) {
           {p.colour && <p className="muted">Farge: {p.colour}</p>}
           <p className="price big">{kr(low)}{high !== low && <span className="muted"> – {kr(high)}</span>} {was && <s>{kr(was)}</s>}</p>
           <p className="muted small">Inkl. mva. Frakt er inkludert i prisen.</p>
-
-          <h2 className="label">Størrelse</h2>
-          <ul className="sizes">
-            {p.variants.map((v) => (
-              <li key={v.sku || v.size} className={v.available ? "" : "off"}>{v.size ?? "Standard"}{!v.available && <span> utsolgt</span>}</li>
-            ))}
-          </ul>
-          <p className={isAvailable(p) ? "stock ok" : "stock"}>{isAvailable(p) ? "På lager" : "Utsolgt"}</p>
-
-          <a className="btn block" href={`https://bikelink.no/products/${p.handle}`}>Kjøp hos BikeLink.no</a>
-          <a className="btn ghost block" href={LINKS.dealers}>Finn forhandler</a>
+          <BuyPanel handle={p.handle} title={p.title} image={p.images[0]?.src ?? null} variants={p.variants.map((v) => ({ sku: v.sku, size: v.size, priceOre: v.priceOre, available: v.available }))} />
           <ul className="facts">
-            <li>Levering hjem eller henting hos forhandler</li>
-            <li>Betal med kort, Klarna eller Vipps</li>
-            <li>Offisiell MMR-importør i Norge</li>
+            <li><strong>Levering hjem</strong> eller hent ferdig montert hos forhandler</li>
+            <li><strong>Betal</strong> med kort, Klarna eller Vipps</li>
+            <li><strong>Reklamasjon</strong> i opptil 5 år og norsk service</li>
           </ul>
+          <Link className="btn ghost block" href="/forhandlere">Finn forhandler</Link>
         </aside>
       </div>
 
-      <section className="prose desc">
+      <section className="prose desc" id="beskrivelse">
         <h2>Om {p.title.replace(/^MMR\s+/, "")}</h2>
         {paragraphs(text).map((t, i) => <p key={i}>{t.trim()}</p>)}
       </section>
 
       {siblings.length > 0 && (
-        <section>
+        <section id="flere">
           <h2 className="family">Flere i MMR {p.family}</h2>
           <div className="grid">{siblings.map((s) => <ProductCard key={s.handle} p={s} />)}</div>
         </section>
