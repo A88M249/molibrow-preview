@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { parsePriceList, priceBreakdown } from "../src/lib/b2b";
+import { VAT_RATE, parsePriceList, priceBreakdown } from "../src/lib/b2b";
 import { CATEGORY_IDS, allProducts, describe, inCategory, kr, listed, products, siblings } from "../src/lib/products";
 
 const INTERNAL = /\bSKU\b|lager \d|Shopify|utkast|Fargevei/i;
@@ -75,4 +75,10 @@ test("B2B price breakdown: ex/incl. VAT and the dealer's margin at the recommend
   assert.ok(Math.abs(b.marginPct - 20) < 0.01, "20 % of the selling price");
   assert.ok(Math.abs(b.markupPct - 25) < 0.01, "= 25 % mark-up on cost");
   assert.ok(priceBreakdown(1000000, 900000).marginOre < 0, "a B2B price above the retail price shows as negative margin");
+});
+
+test("VAT is the Norwegian standard rate, 25 %", () => {
+  assert.equal(VAT_RATE, 0.25);
+  assert.equal(priceBreakdown(12500, 8000).retailExVatOre, 10000, "125 kr incl. VAT = 100 kr excl. VAT");
+  assert.equal(priceBreakdown(12500, 8000).b2bIncVatOre, 10000, "80 kr excl. VAT = 100 kr incl. VAT");
 });

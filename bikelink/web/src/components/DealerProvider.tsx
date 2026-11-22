@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { API, ApiError, DEALER_KEY, api, dealerLogout, getToken, kr, pct, priceBreakdown, setToken } from "@/lib/b2b";
+import { API, ApiError, DEALER_KEY, VAT_RATE, api, dealerLogout, getToken, kr, pct, priceBreakdown, setToken } from "@/lib/b2b";
 
 type Dealer = { company: string; contactName: string; discountPct: number };
 type Item = { sku: string; slug: string; priceOre: number; retailOre: number };
@@ -90,7 +90,7 @@ export function DealerPriceBlock({ slug }: { slug: string }) {
       <p className="mono">Din B2B-pris</p>
       <p className="price big">{kr(b.b2bExVatOre)} <span className="small muted">eks. mva</span></p>
       <dl className="dealer-grid">
-        <dt>B2B-pris inkl. 25 % mva</dt><dd>{kr(b.b2bIncVatOre)}</dd>
+        <dt>B2B-pris inkl. {Math.round(VAT_RATE * 100)} % mva</dt><dd>{kr(b.b2bIncVatOre)}</dd>
         <dt>Veil. utsalgspris inkl. mva</dt><dd>{kr(b.retailIncVatOre)}</dd>
         <dt>Veil. utsalgspris eks. mva</dt><dd>{kr(b.retailExVatOre)}</dd>
         <dt>Din margin</dt><dd className={b.marginOre < 0 ? "neg" : "pos"}><strong>{kr(b.marginOre)}</strong> · {pct(b.marginPct)}</dd>

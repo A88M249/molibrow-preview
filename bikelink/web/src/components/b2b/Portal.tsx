@@ -1,13 +1,14 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ApiError, DEALER_KEY, STATUS_NO, announceDealerChange, api, dateTime, getToken, kr, krDec, pct, priceBreakdown, setToken } from "@/lib/b2b";
+import { ApiError, DEALER_KEY, VAT_RATE, STATUS_NO, announceDealerChange, api, dateTime, getToken, kr, krDec, pct, priceBreakdown, setToken } from "@/lib/b2b";
 
 type Me = { company: string; contactName: string; email: string; address: string; discountPct: number };
 type Row = { sku: string; slug: string; name: string; size: string | null; stock: number; retailOre: number; priceOre: number };
 type OrderRow = { id: string; order_no: number; status: string; reference: string | null; subtotal_ore: number; created_at: string; units: number };
 type OrderDetail = OrderRow & { note: string | null; delivery_address: string; items: { sku: string; name: string; size: string | null; quantity: number; price_ore: number }[] };
-const VAT = 0.25;
+const VAT = VAT_RATE;
+const VAT_LABEL = `${Math.round(VAT_RATE * 100)} %`;
 
 export function Portal() {
   const router = useRouter();
@@ -125,7 +126,7 @@ function Catalog({ token, me, rows, stockAt, onOrdered, guard }: { token: string
         <div className="order-sum">
           <p className="mono">{units} enheter · {lines.length} varianter</p>
           <p>Sum eks. mva <strong>{krDec(sub)}</strong></p>
-          <p className="muted small">Mva 25 % {krDec(Math.round(sub * VAT))} · inkl. mva {krDec(Math.round(sub * (1 + VAT)))}</p>
+          <p className="muted small">Mva {VAT_LABEL} {krDec(Math.round(sub * VAT))} · inkl. mva {krDec(Math.round(sub * (1 + VAT)))}</p>
           {units > 0 && <p className="small">Margin ved salg til veil. pris: <strong>{kr(resale - sub)}</strong> · {pct(resale > 0 ? ((resale - sub) / resale) * 100 : 0)} <span className="muted">(utsalg eks. mva {kr(resale)})</span></p>}
           {msg && <p className="error" role="alert">{msg}</p>}
           <button className="btn" disabled={!units || busy || !address.trim()} onClick={submit}>{busy ? "Sender …" : "Legg inn ordre"}</button>
