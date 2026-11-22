@@ -27,6 +27,11 @@ SLUGS = {
     "gallery": ("galleri", "gallery"),
     "faq": ("sporsmal", "faq"),
     "contact": ("kontakt", "contact"),
+    "book": ("bestill", "book"),
+    "privacy": ("personvern", "privacy"),
+    "areas": ("omrader", None),
+    **{f"area-{k}": (f"omrader/{k}", None) for k in ["eidsvoll", "raholt", "eidsvoll-verk", "minnesund", "hurdal",
+                                                   "ullensaker-jessheim", "nes-arnes", "nannestad", "gjerdrum"]},
 }
 
 NAV_LABEL = {  # short labels used in nav / footer / breadcrumbs / cards
@@ -44,6 +49,9 @@ NAV_LABEL = {  # short labels used in nav / footer / breadcrumbs / cards
     "gallery": ("Galleri", "Gallery"),
     "faq": ("Spørsmål", "FAQ"),
     "contact": ("Kontakt", "Contact"),
+    "book": ("Bestill time", "Book"),
+    "privacy": ("Personvern", "Privacy"),
+    "areas": ("Eidsvoll og omegn", "Area"),
 }
 
 SERVICE_ORDER = ["brow-lamination", "lash-lift", "signature-brows", "brow-shaping",
@@ -322,9 +330,9 @@ SERVICES = {
 
 # ───────────────────────── generic pages
 HOME = dict(
-    title=("Molí Brow Studio – Bryn og vippeløft i Eidsvoll", "Molí Brow Studio – Brows & Lash Lift in Eidsvoll"),
-    desc=("Naturlige bryn og vipper i et rolig studio i Eidsvoll. Brynslaminering, koreansk vippeløft og signaturbryn hos Lina. 5,0 fra 91 vurderinger.",
-          "Natural brows and lashes in a calm studio in Eidsvoll. Brow lamination, Korean lash lift and signature brows with Lina. 5.0 from 91 ratings."),
+    title=("Bryn og vippeløft i Eidsvoll og Akershus | Molí Brow Studio", "Brows & Lash Lift in Eidsvoll, Akershus | Molí Brow Studio"),
+    desc=("Brynslaminering, koreansk vippeløft og signaturbryn i Eidsvoll – for deg fra Råholt, Jessheim, Hurdal, Nes og hele Akershus. 5,0 fra 91 vurderinger.",
+          "Brow lamination, Korean lash lift and signature brows in Eidsvoll, Akershus. Natural results in a calm studio with Lina. 5.0 from 91 ratings."),
 )
 TREATMENTS = dict(
     title=("Behandlinger og priser i Eidsvoll | Molí Brow Studio", "Treatments & Prices in Eidsvoll | Molí Brow Studio"),

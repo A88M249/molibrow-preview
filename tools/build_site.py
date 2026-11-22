@@ -10,10 +10,17 @@ import os, re, json, html, datetime, sys
 from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from site_content import *
+from areas_content import *
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, 'studio')
+OUT = os.environ.get('OUT_DIR') or os.path.join(ROOT, 'studio')
 SITE_URL = os.environ.get('SITE_URL', 'https://example.com').rstrip('/')
+# Booking: 'timma' (live today) or 'spokes' (native booking page that talks to the Spokes public API)
+PROVIDER = os.environ.get('BOOKING_PROVIDER', 'timma').lower()
+SPOKES_API = os.environ.get('SPOKES_API', 'https://api.spokes.no').rstrip('/')
+SPOKES_SLUG = os.environ.get('SPOKES_SLUG', '')          # the studio's workshop slug in Spokes
+SPOKES_APP = os.environ.get('SPOKES_APP', 'https://app.spokesworkshop.com').rstrip('/')
+TURNSTILE_SITEKEY = os.environ.get('TURNSTILE_SITEKEY', '')
 TODAY = datetime.date.today().isoformat()
 LANGS = ('no', 'en')
 L = 0  # current language index (0 = no, 1 = en)
@@ -26,6 +33,8 @@ def t(pair):
 
 def slug_path(key, lang_i):
     slug = SLUGS[key][lang_i]
+    if slug is None:
+        return None
     prefix = 'en/' if lang_i == 1 else ''
     return prefix + (slug + '/' if slug else '')
 
@@ -37,6 +46,21 @@ def href(frm, to):
 
 def url(path):
     return SITE_URL + '/' + path
+
+
+def has_lang(key, lang_i):
+    return SLUGS[key][lang_i] is not None
+
+
+def bk(path):
+    """href (+ target) for every 'book' call-to-action: Timma today, the native Spokes page when enabled."""
+    if PROVIDER == 'spokes':
+        return f'href="{href(path, slug_path("book", L))}"'
+    return f'href="{BOOKING}" target="_blank" rel="noopener"'
+
+
+def book_abs():
+    return url(slug_path('book', L)) if PROVIDER == 'spokes' else BOOKING
 
 
 def fmt_dur(m):
@@ -60,7 +84,7 @@ def head(path, key, title, desc, ld=None, noindex=False, og_img='img/hero.jpg'):
     P = '../' * path.count('/')
     canon = url(path)
     alts = ''
-    if not noindex:
+    if not noindex and has_lang(key, 1) and has_lang(key, 0):
         no_u, en_u = url(slug_path(key, 0)), url(slug_path(key, 1))
         alts = (f'<link rel="alternate" hreflang="nb" href="{no_u}"><link rel="alternate" hreflang="en" href="{en_u}">'
                 f'<link rel="alternate" hreflang="x-default" href="{no_u}">')
@@ -93,9 +117,10 @@ def header(path, key, solid):
         f'<a href="{href(path, slug_path(k, L))}"{" aria-current=" + chr(34) + "page" + chr(34) if k == key or (k in ("treatments",) and key in SERVICES) else ""}>{esc(t(NAV_LABEL[k]))}</a>'
         for k in nav_keys)
     other = 1 - L
-    lang_link = (f'<a class="lang" href="{href(path, slug_path(key, other))}" hreflang="{"en" if other else "nb"}" lang="{"en" if other else "nb"}" '
+    tgt_key = key if has_lang(key, other) else 'home'
+    lang_link = (f'<a class="lang" href="{href(path, slug_path(tgt_key, other))}" hreflang="{"en" if other else "nb"}" lang="{"en" if other else "nb"}" '
                  f'aria-label="{"English" if other else "Norsk"}">{"EN" if other else "NO"}</a>')
-    book = f'<a class="btn" href="{BOOKING}" target="_blank" rel="noopener">{"Bestill time" if L == 0 else "Book now"}</a>'
+    book = f'<a class="btn" {bk(path)}>{"Bestill time" if L == 0 else "Book now"}</a>'
     return f'''<body>
 <a class="skip" href="#main">{"Hopp til innhold" if L == 0 else "Skip to content"}</a>
 <header id="hd"{' class="solid" data-solid' if solid else ''}><div class="wrap bar">
@@ -106,22 +131,28 @@ def header(path, key, solid):
 '''
 
 
-def footer(path):
+def footer(path, extra_js=''):
     P = '../' * path.count('/')
     h = lambda k: href(path, slug_path(k, L))
     svc = ''.join(f'<a href="{h(k)}">{esc(t(NAV_LABEL[k]))}</a>' for k in SERVICE_ORDER)
     st = ''.join(f'<a href="{h(k)}">{esc(t(NAV_LABEL[k]))}</a>' for k in ['about', 'gallery', 'faq', 'contact', 'gift-cards'])
+    area_col = ''
+    if L == 0:
+        area_col = ('<div><h4>Eidsvoll og omegn</h4>' + f'<a href="{h("areas")}">Bryn og vipper i Akershus</a>'
+                    + ''.join(f'<a href="{h("area-" + k)}">{esc(AREAS[k]["name"])}</a>' for k in AREA_ORDER[:6]) + '</div>')
     return f'''<footer><div class="wrap">
   <div class="fgrid">
     <div><img src="{P}img/logo-milk.svg" alt="Molí Brow Studio" width="92" height="52" loading="lazy">
       <p>{'Bryn og vippeløft' if L == 0 else 'Brows and lash lift'}<br>Sundgata 7, 3. {'etasje' if L == 0 else 'floor'}<br>2080 Eidsvoll</p></div>
     <div><h4>{'Behandlinger' if L == 0 else 'Treatments'}</h4>{svc}</div>
     <div><h4>Studio</h4>{st}</div>
-    <div><h4>{'Følg og bestill' if L == 0 else 'Follow & book'}</h4><a href="{INSTAGRAM}" target="_blank" rel="noopener">Instagram</a><a href="{TIKTOK}" target="_blank" rel="noopener">TikTok</a><a href="{BOOKING}" target="_blank" rel="noopener">Timma</a><a href="mailto:{EMAIL}">{EMAIL}</a></div>
+    {area_col}
+    <div><h4>{'Følg og bestill' if L == 0 else 'Follow & book'}</h4><a href="{INSTAGRAM}" target="_blank" rel="noopener">Instagram</a><a href="{TIKTOK}" target="_blank" rel="noopener">TikTok</a><a {bk(path)}>{'Bestill time' if PROVIDER == 'spokes' else 'Timma'}</a><a href="mailto:{EMAIL}">{EMAIL}</a><a href="{href(path, slug_path('privacy', L))}">{esc(t(NAV_LABEL['privacy']))}</a></div>
   </div>
   <div class="legal"><span>© {datetime.date.today().year} Molí Brow Studio</span><span>{'Bilder er fargekorrigert for et enhetlig studiouttrykk.' if L == 0 else 'Photos colour-graded for a consistent studio look.'}</span></div>
 </div></footer>
-<script src="{P}assets/site.js" defer></script>
+<script src="{P}assets/vendor/gsap.min.js" defer></script><script src="{P}assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="{P}assets/site.js" defer></script>{extra_js}
 </body></html>'''
 
 
@@ -153,7 +184,7 @@ def cta_section(path, h2=None):
     return f'''<section class="book"><div class="wrap">
   <p class="eyebrow rv" style="justify-content:center">{'Bestill' if L == 0 else 'Book'}</p>
   <h2 class="rv">{h2}</h2><p class="rv">{p}</p>
-  <a class="btn rv" href="{BOOKING}" target="_blank" rel="noopener">{b} →</a>
+  <a class="btn rv" {bk(path)}>{b} →</a>
 </div></section>'''
 
 
@@ -175,7 +206,8 @@ def business_ld(full=True):
             "image": url('img/hero.jpg'), "email": EMAIL,
             "address": {"@type": "PostalAddress", "streetAddress": "Sundgata 7, 3. etasje", "postalCode": "2080",
                         "addressLocality": "Eidsvoll", "addressCountry": "NO"},
-            "areaServed": {"@type": "City", "name": "Eidsvoll"},
+            "areaServed": [{"@type": "City", "name": "Eidsvoll"}, {"@type": "AdministrativeArea", "name": "Akershus"}] +
+                          [{"@type": "Place", "name": AREAS[k]["name"]} for k in AREA_ORDER if k != "eidsvoll"],
             "sameAs": [INSTAGRAM, TIKTOK, BOOKING]}
     if full:
         node["@context"] = "https://schema.org"
@@ -202,6 +234,14 @@ def write(path, content):
 
 
 # ───────────────────────── pages
+def local_strip(path):
+    if L != 0:
+        return ''
+    links = ', '.join(f'<a href="{href(path, slug_path("area-" + k, 0))}">{esc(AREAS[k]["name"])}</a>' for k in AREA_ORDER)
+    return (f'<section style="padding:48px 0 0"><div class="wrap"><p class="rv" style="max-width:52em;margin:0">Vi tar imot kunder fra {links} og hele Akershus-området rundt Eidsvoll. '
+            f'<a href="{href(path, slug_path("areas", 0))}">Se alle steder →</a></p></div></section>')
+
+
 def page_service(key):
     s = SERVICES[key]
     path = slug_path(key, L)
@@ -231,7 +271,7 @@ def page_service(key):
 <section class="phero"><div class="wrap phero-grid">
   <div>{cr_html}{eyebrow('Molí Brow Studio · Eidsvoll')}<h1>{esc(t(s['h1']))}</h1>
     <p class="lead">{esc(t(s['lead']))}</p>{f'<div class="keyfacts">{keyfacts}</div>'}
-    <a class="btn" href="{BOOKING}" target="_blank" rel="noopener">{'Bestill time' if L == 0 else 'Book now'} →</a></div>
+    <a class="btn" {bk(path)}>{'Bestill time' if L == 0 else 'Book now'} →</a></div>
   <figure class="frame"><div class="marks"><i></i><i></i><i></i><i></i></div>{img(P, s['img'], t(s['alt']), fetch=True)}
     <figcaption><span>Molí Brow Studio</span><span>{esc(label)}</span></figcaption></figure>
 </div></section>
@@ -255,7 +295,7 @@ def page_service(key):
 </div></section>
 
 {faq_section(s['faq'])}
-
+{local_strip(path)}
 <section><div class="wrap">
   <p class="eyebrow">{'Se også' if L == 0 else 'See also'}</p><h2 style="margin-bottom:40px">{'Andre <em>behandlinger</em>' if L == 0 else 'Other <em>treatments</em>'}</h2>
   <div class="cards">{rel}</div></div></section>
@@ -264,7 +304,7 @@ def page_service(key):
     service_ld = {"@context": "https://schema.org", "@type": "Service", "name": t(s['h1']), "serviceType": label,
                   "description": t(s['desc']), "url": url(path), "image": url(f"img/{s['img']}.jpg"),
                   "provider": business_ld(full=False), "areaServed": {"@type": "City", "name": "Eidsvoll"},
-                  "offers": [{"@type": "Offer", "name": (o[1] if L else o[0]), "price": str(o[2]), "priceCurrency": "NOK", "url": BOOKING}
+                  "offers": [{"@type": "Offer", "name": (o[1] if L else o[0]), "price": str(o[2]), "priceCurrency": "NOK", "url": book_abs()}
                              for o in s['options']]}
     ld = [service_ld, faq_ld(s['faq']), cr_ld]
     write(path, head(path, key, t(s['title']), t(s['desc']), ld, og_img=f"img/{s['img']}.jpg") + header(path, key, True) + body + footer(path))
@@ -283,7 +323,7 @@ def page_treatments():
     body = f'''<main id="main">
 <section class="phero solo"><div class="wrap phero-grid"><div>{cr_html}{eyebrow('Molí Brow Studio · Eidsvoll')}<h1>{esc(t(TREATMENTS['h1']))}</h1>
 <p class="lead">{esc(t(TREATMENTS['lead']))}</p>
-<a class="btn" href="{BOOKING}" target="_blank" rel="noopener">{'Bestill time' if L == 0 else 'Book now'} →</a></div></div></section>
+<a class="btn" {bk(path)}>{'Bestill time' if L == 0 else 'Book now'} →</a></div></div></section>
 <section class="treat"><div class="wrap">{blocks}
 <p class="note" style="font-size:14px;opacity:.8">{'Gavekort: 500 kr, 750 kr eller valgfritt beløp – ' if L == 0 else 'Gift cards: 500 NOK, 750 NOK or any amount – '}<a href="{href(path, slug_path('gift-cards', L))}">{esc(t(NAV_LABEL['gift-cards']))}</a>.</p></div></section>
 {cta_section(path)}</main>'''
@@ -304,7 +344,7 @@ def page_gift():
     st = ''.join(f'<div class="rv"><div class="n">0{i + 1}</div><p>{esc(x)}</p></div>' for i, x in enumerate(steps[L]))
     body = f'''<main id="main">
 <section class="phero solo"><div class="wrap phero-grid"><div>{cr_html}{eyebrow('Molí Brow Studio · Eidsvoll')}<h1>{esc(t(GIFT['h1']))}</h1><p class="lead">{esc(t(GIFT['lead']))}</p>
-<a class="btn" href="{BOOKING}" target="_blank" rel="noopener">{'Kjøp gavekort' if L == 0 else 'Buy a gift card'} →</a></div></div></section>
+<a class="btn" {bk(path)}>{'Kjøp gavekort' if L == 0 else 'Buy a gift card'} →</a></div></div></section>
 <section><div class="wrap"><div class="amounts">{cards}</div><div class="steps3">{st}</div></div></section>
 {cta_section(path, 'Gi bort en <em>brynhistorie</em>.' if L == 0 else 'Give someone a <em>brow story</em>.')}</main>'''
     write(path, head(path, key, t(GIFT['title']), t(GIFT['desc']), [cr_ld]) + header(path, key, True) + body + footer(path))
@@ -329,7 +369,7 @@ def page_about():
     body = f'''<main id="main">
 <section class="phero"><div class="wrap phero-grid"><div>{cr_html}{eyebrow('Molí Brow Studio · Eidsvoll')}<h1>{esc(t(ABOUT['h1']))}</h1>
 <p class="lead" style="font-weight:200;font-size:clamp(22px,2.4vw,30px);line-height:1.35">{esc(quote)}</p>
-<a class="btn" href="{BOOKING}" target="_blank" rel="noopener">{'Bestill hos Lina' if L == 0 else 'Book with Lina'} →</a></div>
+<a class="btn" {bk(path)}>{'Bestill hos Lina' if L == 0 else 'Book with Lina'} →</a></div>
 <figure class="frame"><div class="marks"><i></i><i></i><i></i><i></i></div>{img(P, 'lina', 'Lina i studioet i Eidsvoll' if L == 0 else 'Lina in the studio in Eidsvoll', fetch=True)}<figcaption><span>Lina</span><span>{'Brynstylist' if L == 0 else 'Brow stylist'}</span></figcaption></figure></div></section>
 <section><div class="wrap two"><div class="prose"><h2>{'Om meg og studioet' if L == 0 else 'About me and the studio'}</h2><p>{esc(t(p1))}</p><p>{esc(t(p2))}</p>
 <div class="proofs">{pr}</div></div>
@@ -377,7 +417,7 @@ def page_contact():
 <div class="rv"><h3>{g('Adresse', 'Address')}</h3><p style="margin:0">Molí Brow Studio<br>Sundgata 7, 3. {g('etasje', 'floor')}<br>2080 Eidsvoll</p><a href="{MAPS}" target="_blank" rel="noopener">{g('Åpne i Google Maps', 'Open in Google Maps')} →</a></div>
 <div class="rv"><h3>{g('Slik finner du oss', 'Finding us')}</h3><p style="margin:0">{g('Studioet ligger i 3. etasje i Sundgata 7. Det er gratis parkering rett utenfor.', 'The studio is on the 3rd floor of Sundgata 7. Free parking is right outside.')}</p></div>
 <div class="rv"><h3>{g('Kontakt', 'Contact')}</h3><a href="mailto:{EMAIL}">{EMAIL}</a><a href="{INSTAGRAM}" target="_blank" rel="noopener">Instagram</a><a href="{TIKTOK}" target="_blank" rel="noopener">TikTok</a></div>
-<div class="rv"><h3>{g('Bestill time', 'Book')}</h3><p style="margin:0 0 10px">{g('Du bestiller trygt online via Timma.', 'You book securely online via Timma.')}</p><a href="{BOOKING}" target="_blank" rel="noopener">{g('Se ledige timer', 'See available times')} →</a></div>
+<div class="rv"><h3>{g('Bestill time', 'Book')}</h3><p style="margin:0 0 10px">{g('Du bestiller trygt online via Timma.', 'You book securely online via Timma.')}</p><a {bk(path)}>{g('Se ledige timer', 'See available times')} →</a></div>
 <div class="rv"><h3>{g('Avbestilling', 'Cancellation')}</h3><p style="margin:0">{g('Avbestill i Timma senest 24 timer før timen. Senere avbestilling eller uteblivelse kan belastes med 100 % av prisen.', 'Cancel in Timma at least 24 hours before. Later cancellations or no-shows may be charged 100% of the price.')}</p></div>
 <div class="rv"><h3>{g('Spørsmål?', 'Questions?')}</h3><p style="margin:0">{g('Usikker på hva som passer? Send en e-post før du bestiller.', 'Unsure what suits you? Send an email before you book.')}</p><a href="{href(path, slug_path('faq', L))}">{g('Les spørsmål og svar', 'Read the FAQ')} →</a></div></div>'''
     body = f'''<main id="main">
@@ -396,6 +436,121 @@ def page_faq():
 <a class="btn ghost" href="mailto:{EMAIL}">{'Send e-post' if L == 0 else 'Send email'}</a></div></div></section>
 {faq_section(FAQ['items'])}{cta_section(path)}</main>'''
     write(path, head(path, key, t(FAQ['title']), t(FAQ['desc']), [faq_ld(FAQ['items']), cr_ld]) + header(path, key, True) + body + footer(path))
+
+
+# ───────────────────────── area pages (Norwegian only) for Akershus local SEO
+def area_label(k):
+    return AREAS[k]['name']
+
+
+def area_links_html(path, exclude=None, heading=None):
+    cards = ''.join(
+        f'<a class="card plain rv" href="{href(path, slug_path("area-" + k, 0))}"><div class="ct"><h3>{esc(AREAS[k]["name"])}</h3>'
+        f'<p>{esc(AREAS[k]["muni"])}</p></div></a>' for k in AREA_ORDER if k != exclude)
+    return cards
+
+
+def page_areas_hub():
+    key, path = 'areas', slug_path('areas', 0)
+    cr_html, cr_ld = crumbs(path, [(HUB['h1'], None)])
+    cards = area_links_html(path)
+    prose = ''.join(f'<p>{esc(x)}</p>' for x in HUB['body'])
+    body = f'''<main id="main">
+<section class="phero solo"><div class="wrap phero-grid"><div>{cr_html}{eyebrow('Molí Brow Studio · Eidsvoll')}<h1>{esc(HUB['h1'])}</h1><p class="lead">{esc(HUB['lead'])}</p>
+<a class="btn" {bk(path)}>Bestill time →</a></div></div></section>
+<section><div class="wrap two"><div class="prose"><h2>Eidsvoll og <em>omegn</em></h2>{prose}
+<p><a href="{MAPS}" target="_blank" rel="noopener">Åpne Sundgata 7 i Google Maps →</a></p></div>
+<div class="side"><h3>Studioet</h3><ul class="ticks"><li>Sundgata 7, 3. etasje, 2080 Eidsvoll</li><li>Gratis parkering rett utenfor</li><li>5,0 fra 91 vurderinger på Timma</li></ul></div></div></section>
+<section class="treat"><div class="wrap"><p class="eyebrow">Steder</p><h2 style="margin-bottom:40px">Kunder fra <em>hele området</em></h2><div class="cards">{cards}</div></div></section>
+<section><div class="wrap"><p class="eyebrow">Behandlinger</p><h2 style="margin-bottom:40px">Det kan du bestille</h2>
+<div class="cards">{''.join(f'<a class="card plain rv" href="{href(path, slug_path(k, 0))}"><div class="ct"><h3>{esc(NAV_LABEL[k][0])}</h3><p>{esc(first_sentence(SERVICES[k]["lead"][0]))}</p><div class="from">Fra {SERVICES[k]["from_price"]} kr</div></div></a>' for k in SERVICE_ORDER[:6])}</div></div></section>
+{cta_section(path)}</main>'''
+    ld = [cr_ld, {"@context": "https://schema.org", "@type": "CollectionPage", "name": HUB['h1'], "url": url(path),
+                  "about": business_ld(full=False)}]
+    write(path, head(path, key, HUB['title'], HUB['desc'], ld) + header(path, key, True) + body + footer(path))
+
+
+def page_area(ak):
+    a = AREAS[ak]
+    key, path = 'area-' + ak, slug_path('area-' + ak, 0)
+    P = '../' * path.count('/')
+    cr_html, cr_ld = crumbs(path, [(t(NAV_LABEL['areas']), 'areas'), (a['name'], None)])
+    prose = ''.join(f'<p>{esc(x)}</p>' for x in a['local'])
+    rows = ''.join(
+        f'<div class="row"><b><a href="{href(path, slug_path(k, 0))}">{esc(NAV_LABEL[k][0])}</a></b><span class="p">{"fra " if len(SERVICES[k]["options"]) > 1 else ""}{SERVICES[k]["from_price"]} kr</span>'
+        f'</div>' for k in SERVICE_ORDER)
+    near = area_links_html(path, exclude=ak)
+    why = ['Konsultasjon først – vi ser på hårene og ønskene dine før vi starter.', 'Rolig og nøye – en personlig time, uten stress.',
+           'Faste priser – du vet hva det koster før du bestiller.', 'Gratis parkering rett utenfor studioet.']
+    faq_items = [((q, q), (ans, ans)) for q, ans in a['faq']]
+    body = f'''<main id="main">
+<section class="phero"><div class="wrap phero-grid"><div>{cr_html}{eyebrow('Molí Brow Studio · ' + a['name'])}<h1>{esc(a['h1'])}</h1>
+<p class="lead">{esc(a['intro'])}</p>
+<div class="ctas"><a class="btn" {bk(path)}>Bestill time →</a> <a class="btn ghost" href="{MAPS}" target="_blank" rel="noopener">Veibeskrivelse</a></div></div>
+<figure class="frame"><div class="marks"><i></i><i></i><i></i><i></i></div>{img(P, 'brow-1', 'Brynslaminering hos Molí Brow Studio i Eidsvoll', fetch=True)}<figcaption><span>Sundgata 7</span><span>Eidsvoll</span></figcaption></figure></div></section>
+<section><div class="wrap two"><div class="prose"><h2>Bryn og vipper <em>nær {esc(a['name'])}</em></h2>{prose}</div>
+<div class="side"><h3>Hvorfor Molí Brow Studio</h3><ul class="ticks">{''.join(f'<li>{esc(x)}</li>' for x in why)}</ul></div></div></section>
+<section class="treat"><div class="wrap"><p class="eyebrow">Behandlinger og priser</p><h2 style="margin-bottom:12px">Faste priser</h2><div style="max-width:640px">{rows}</div></div></section>
+{faq_section(faq_items, 'Spørsmål fra <em>' + esc(a['name']) + '</em>')}
+<section><div class="wrap"><p class="eyebrow">Eidsvoll og omegn</p><h2 style="margin-bottom:40px">Kunder fra <em>flere steder</em></h2><div class="cards">{near}</div></div></section>
+{cta_section(path)}</main>'''
+    ld = [cr_ld, faq_ld(faq_items), {"@context": "https://schema.org", "@type": "WebPage", "name": a['title'], "url": url(path),
+          "about": business_ld(full=False), "spatialCoverage": {"@type": "AdministrativeArea", "name": a['muni']}}]
+    write(path, head(path, key, a['title'], a['desc'], ld, og_img='img/brow-1.jpg') + header(path, key, True) + body + footer(path))
+
+
+def page_privacy():
+    key, path = 'privacy', slug_path('privacy', L)
+    cr_html, cr_ld = crumbs(path, [(t(NAV_LABEL['privacy']), None)])
+    secs = ''.join(f'<h2 style="font-size:24px;margin:40px 0 12px">{esc(t(h))}</h2><p>{esc(t(b))}</p>' for h, b in PRIVACY['sections'])
+    body = f'''<main id="main"><section class="phero solo"><div class="wrap phero-grid"><div>{cr_html}<h1>{esc(t(PRIVACY['h1']))}</h1></div></div></section>
+<section><div class="wrap"><div class="prose" style="max-width:46em">{secs}</div></div></section></main>'''
+    write(path, head(path, key, t(PRIVACY['title']), t(PRIVACY['desc']), [cr_ld]) + header(path, key, True) + body + footer(path))
+
+
+# ───────────────────────── booking page (native Spokes flow, or a Timma fallback)
+I18N = {
+    'no': {'service': 'Velg behandling', 'day': 'Velg dag', 'time': 'Velg tidspunkt', 'details': 'Dine opplysninger', 'first': 'Fornavn', 'last': 'Etternavn',
+           'phone': 'Mobilnummer', 'email': 'E-post', 'comment': 'Kommentar (valgfritt)', 'terms': 'Jeg godtar vilkårene og at opplysningene brukes til å gjennomføre bestillingen.',
+           'privacy': 'Personvern', 'send': 'Send bestilling', 'sending': 'Sender…', 'next': 'Neste', 'back': 'Tilbake', 'full': 'Fullt', 'closed': 'Stengt',
+           'loading': 'Henter ledige dager…', 'noslots': 'Lina bekrefter klokkeslett på SMS eller e-post.', 'ok': 'Takk! Bestillingen er sendt.',
+           'ok2': 'Du får bekreftelse på SMS eller e-post.', 'status': 'Se bestillingen din', 'err': 'Noe gikk galt. Prøv igjen, eller bestill via Timma.',
+           'full_err': 'Dagen eller timen ble akkurat full – velg en annen.', 'rate': 'For mange forsøk. Vent litt og prøv igjen.', 'contact': 'Oppgi mobilnummer eller e-post.',
+           'fallback': 'Bestill via Timma', 'fallbackText': 'Online booking er ikke tilgjengelig akkurat nå. Du kan bestille via Timma i stedet.',
+           'min': 'min', 'from': 'kr', 'month': ['januar','februar','mars','april','mai','juni','juli','august','september','oktober','november','desember'],
+           'dow': ['man','tir','ons','tor','fre','lør','søn'], 'prev': 'Forrige måned', 'nextm': 'Neste måned', 'pick': 'Velg en behandling og en dag.', 'terms_err': 'Du må godta vilkårene.',
+           'name_err': 'Oppgi fornavn.', 'qty': 'Antall'},
+    'en': {'service': 'Choose a treatment', 'day': 'Choose a day', 'time': 'Choose a time', 'details': 'Your details', 'first': 'First name', 'last': 'Last name',
+           'phone': 'Mobile number', 'email': 'Email', 'comment': 'Comment (optional)', 'terms': 'I accept the terms and that my details are used to carry out the booking.',
+           'privacy': 'Privacy', 'send': 'Send booking', 'sending': 'Sending…', 'next': 'Next', 'back': 'Back', 'full': 'Full', 'closed': 'Closed',
+           'loading': 'Loading available days…', 'noslots': 'Lina confirms the time by SMS or email.', 'ok': 'Thank you! Your booking has been sent.',
+           'ok2': 'You will get a confirmation by SMS or email.', 'status': 'View your booking', 'err': 'Something went wrong. Try again, or book via Timma.',
+           'full_err': 'That day or time just filled up – please pick another.', 'rate': 'Too many attempts. Wait a moment and try again.', 'contact': 'Enter a mobile number or email.',
+           'fallback': 'Book via Timma', 'fallbackText': 'Online booking is not available right now. You can book via Timma instead.',
+           'min': 'min', 'from': 'NOK', 'month': ['January','February','March','April','May','June','July','August','September','October','November','December'],
+           'dow': ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], 'prev': 'Previous month', 'nextm': 'Next month', 'pick': 'Choose a treatment and a day.', 'terms_err': 'You must accept the terms.',
+           'name_err': 'Enter your first name.', 'qty': 'Quantity'},
+}
+
+
+def page_book():
+    key, path = 'book', slug_path('book', L)
+    P = '../' * path.count('/')
+    cr_html, cr_ld = crumbs(path, [(t(NAV_LABEL['book']), None)])
+    cfg = {"api": SPOKES_API, "slug": SPOKES_SLUG, "app": SPOKES_APP, "sitekey": TURNSTILE_SITEKEY, "timma": BOOKING,
+           "provider": PROVIDER, "lang": LANGS[L], "i18n": I18N[LANGS[L]], "privacy": href(path, slug_path('privacy', L)),
+           "pre": 'service'}
+    fallback = f'<p>{esc(I18N[LANGS[L]]["fallbackText"])}</p><a class="btn" href="{BOOKING}" target="_blank" rel="noopener">{esc(I18N[LANGS[L]]["fallback"])} →</a>'
+    body = f'''<main id="main">
+<section class="phero solo"><div class="wrap phero-grid"><div>{cr_html}{eyebrow('Molí Brow Studio · Eidsvoll')}<h1>{esc(t(BOOK['h1']))}</h1><p class="lead">{esc(t(BOOK['lead']))}</p></div></div></section>
+<section style="padding-top:24px"><div class="wrap"><div id="book-app" class="book-app" data-config='{esc(json.dumps(cfg, ensure_ascii=False))}'>
+<noscript>{fallback}</noscript><div class="book-fallback" hidden>{fallback}</div></div></div></section></main>'''
+    write(path, head(path, key, t(BOOK['title']), t(BOOK['desc']), [cr_ld], noindex=(PROVIDER != 'spokes')) + header(path, key, True) + body
+          + footer(path, extra_js=f'<script src="{P}assets/booking.js" defer></script>'))
+
+
+def first_sentence_pair(pair):
+    return first_sentence(pair[L])
 
 
 # ───────────────────────── home (reuses the designed one-pager body)
@@ -441,13 +596,20 @@ def page_home():
     m = m.replace('<!-- GALLERY: contact sheet -->', cards_sec + '<!-- GALLERY -->')
     m = m.replace('Instagram →</a>', f'Instagram →</a> <a class="btn ghost rv" href="{href(path, slug_path("gallery", L))}">{"Hele galleriet" if L == 0 else "Full gallery"} →</a>', 1)
     m = m.replace('<main id="top">', '').replace('id="studio"', 'id="studio"')
+    if PROVIDER == 'spokes':
+        bkp = href(path, slug_path('book', L))
+        m = m.replace('href="https://bestill.timma.no/molbrowstudio" target="_blank" rel="noopener"', f'href="{bkp}"')
     m = re.sub(r' & ', ' &amp; ', m)
     m = m.replace('href="#om"', '')
     # extra links to About / FAQ / Contact
     m = m.replace('<!-- BOOK -->', f'<!-- BOOK -->')
     about_l = f'<p class="rv" style="margin-top:24px"><a href="{href(path, slug_path("about", L))}">{"Les mer om Lina" if L == 0 else "More about Lina"} →</a> &nbsp;·&nbsp; <a href="{href(path, slug_path("contact", L))}">{"Adresse og kontakt" if L == 0 else "Address and contact"} →</a> &nbsp;·&nbsp; <a href="{href(path, slug_path("faq", L))}">{"Alle spørsmål" if L == 0 else "All questions"} →</a></p>'
     m = m.replace('<!-- FAQ -->', '<!-- FAQ -->')
-    m = m.replace('<!-- BOOK -->', f'<section style="padding:0 0 40px"><div class="wrap">{about_l}</div></section><!-- BOOK -->')
+    area_sec = ''
+    if L == 0:
+        area_sec = (f'<section class="treat"><div class="wrap"><p class="eyebrow rv">Eidsvoll og omegn</p><h2 class="rv" style="margin-bottom:36px">Kunder fra <em>hele Akershus-området</em></h2>'
+                    f'<div class="cards">{area_links_html(path)}</div><div class="more rv"><a class="btn ghost" href="{href(path, slug_path("areas", 0))}">Se alle steder →</a></div></div></section>')
+    m = m.replace('<!-- BOOK -->', area_sec + f'<section style="padding:0 0 40px"><div class="wrap">{about_l}</div></section><!-- BOOK -->')
     body = '<main id="main">' + m + '</main>'
     # exactly one H1 already exists in the template hero
     write(path, head(path, key, t(HOME['title']), t(HOME['desc']), [business_ld(True)]) + header(path, key, False) + body + footer(path))
@@ -468,13 +630,19 @@ def page_404():
 
 
 def sitemap():
-    keys = list(SLUGS.keys())
     rows = ''
-    for k in keys:
+    for k in SLUGS:
+        both = has_lang(k, 0) and has_lang(k, 1)
         for i in (0, 1):
-            alts = ''.join(f'<xhtml:link rel="alternate" hreflang="{h}" href="{url(slug_path(k, j))}"/>' for j, h in ((0, 'nb'), (1, 'en')))
-            alts += f'<xhtml:link rel="alternate" hreflang="x-default" href="{url(slug_path(k, 0))}"/>'
-            pri = '1.0' if k == 'home' else ('0.9' if k in SERVICES or k == 'treatments' else '0.6')
+            if not has_lang(k, i):
+                continue
+            alts = ''
+            if both:
+                alts = ''.join(f'<xhtml:link rel="alternate" hreflang="{h}" href="{url(slug_path(k, j))}"/>' for j, h in ((0, 'nb'), (1, 'en')))
+                alts += f'<xhtml:link rel="alternate" hreflang="x-default" href="{url(slug_path(k, 0))}"/>'
+            if k == 'book' and PROVIDER != 'spokes':
+                continue  # booking page is noindex until the Spokes flow is enabled
+            pri = '1.0' if k == 'home' else ('0.9' if k in SERVICES or k in ('treatments', 'areas') else ('0.7' if k.startswith('area-') else '0.6'))
             rows += f'<url><loc>{url(slug_path(k, i))}</loc><lastmod>{TODAY}</lastmod><priority>{pri}</priority>{alts}</url>\n'
     open(os.path.join(OUT, 'sitemap.xml'), 'w', encoding='utf8').write(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + rows + '</urlset>\n')
@@ -489,6 +657,11 @@ def main():
         for k in SERVICES:
             page_service(k)
         page_gift(); page_about(); page_gallery(); page_contact(); page_faq()
+        page_privacy(); page_book()
+    L = 0
+    page_areas_hub()
+    for ak in AREA_ORDER:
+        page_area(ak)
     page_404(); sitemap()
     print('built', sum(1 for _ in os.walk(OUT)), 'dirs; SITE_URL =', SITE_URL)
 
