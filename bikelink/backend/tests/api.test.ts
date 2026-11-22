@@ -7,19 +7,21 @@ import { after, before, describe, test } from "node:test";
 const url = process.env.DATABASE_URL && /test/i.test(new URL(process.env.DATABASE_URL).pathname) ? process.env.DATABASE_URL : undefined;
 if (process.env.DATABASE_URL && !url) console.warn("Skipping API tests: DATABASE_URL database name must contain 'test'.");
 Object.assign(process.env, {
+  RATE_LIMIT_MULTIPLIER: "1000", JWT_SECRET: "test-jwt-secret-with-enough-length-1234567890",
   SITE_URL: "http://localhost:3000", STRIPE_SECRET_KEY: "sk_test_x", STRIPE_WEBHOOK_SECRET: "whsec_x",
   VIPPS_BASE_URL: "http://127.0.0.1:9", VIPPS_CLIENT_ID: "x", VIPPS_CLIENT_SECRET: "x", VIPPS_SUBSCRIPTION_KEY: "x", VIPPS_MSN: "x",
-  ADMIN_TOKEN: "test-admin-token",
 });
 
 describe("api", { skip: !url }, () => {
   let app: Awaited<ReturnType<(typeof import("../src/app.js"))["buildApp"]>>;
   let orders: typeof import("../src/orders.js");
   let pool: typeof import("../src/db.js")["pool"];
-  const auth = { authorization: "Bearer test-admin-token" };
+  let auth: Record<string, string> = {};
 
   before(async () => {
     ({ pool } = await import("../src/db.js"));
+    await pool.query(readFileSync(new URL("../sql/schema.sql", import.meta.url), "utf8"));
+    auth = await (await import("./helpers.js")).adminHeaders(pool);
     await pool.query("TRUNCATE order_items, orders, products RESTART IDENTITY CASCADE");
     await pool.query(readFileSync(new URL("../sql/schema.sql", import.meta.url), "utf8"));
     await pool.query(`INSERT INTO products (sku, slug, name, size, price_ore, stock) VALUES
@@ -74,7 +76,7 @@ describe("api", { skip: !url }, () => {
     assert.equal((await app.inject({ method: "POST", url: `/admin/orders/${o.id}/fulfil`, headers: auth })).statusCode, 409);
   });
 
-  test("admin API needs the token and can set stock", async () => {
+  test("admin API needs a staff session and can set stock", async () => {
     assert.equal((await app.inject("/admin/orders")).statusCode, 401);
     assert.equal((await app.inject({ url: "/admin/orders", headers: { authorization: "Bearer wrong-token!!" } })).statusCode, 401);
     const list = await app.inject({ url: "/admin/orders?status=fulfilled", headers: auth });

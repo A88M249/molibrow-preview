@@ -61,7 +61,8 @@ const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,
 
 // Header names seen in English, Spanish (MMR is Spanish), Norwegian and common ERP exports – best match first.
 const SKU_HEADERS = ["sku", "ref", "referencia", "reference", "refmmr", "codigo", "codigoarticulo", "codarticulo", "articulo", "itemcode", "itemno", "item", "partno", "partnumber", "productcode", "modelcode", "artnr", "artikelnr", "artikkelnr", "varenr", "varenummer", "code"];
-const QTY_HEADERS = ["stock", "stocks", "stockdisponible", "disponible", "disponibles", "existencias", "cantidad", "unidades", "units", "qty", "quantity", "available", "onhand", "inventory", "lager", "lagersaldo", "lagerbeholdning", "saldo", "antall"];
+// MMR's own export has "Disponible inmediato" (available now) and "Disponible próximamente" (arriving soon): only the first is stock.
+const QTY_HEADERS = ["disponibleinmediato", "stockinmediato", "immediatestock", "availablenow", "stock", "stocks", "stockdisponible", "disponible", "disponibles", "existencias", "cantidad", "unidades", "units", "qty", "quantity", "available", "onhand", "inventory", "lager", "lagersaldo", "lagerbeholdning", "saldo", "antall"];
 
 function pick(headers: string[], wanted: string[], override?: string): number {
   if (override) { const i = headers.findIndex((h) => norm(h) === norm(override)); if (i >= 0) return i; }
@@ -71,7 +72,8 @@ function pick(headers: string[], wanted: string[], override?: string): number {
 
 /** "12", "12,0", "1.234", "1 234", "1,234.00", "1.234,00" → integer (floor); null if not a number. */
 export function parseQty(raw: string): number | null {
-  let s = raw.trim().replace(/[\s ']/g, "");
+  // "+10" means "10 or more" (MMR caps its numbers); we keep the number and treat it as exactly that much.
+  let s = raw.trim().replace(/[\s\u00a0']/g, "").replace(/^\+(?=\d)/, "");
   if (!/^-?[\d.,]+$/.test(s)) return null;
   const lastDot = s.lastIndexOf("."), lastComma = s.lastIndexOf(",");
   if (lastDot >= 0 && lastComma >= 0) s = lastDot > lastComma ? s.replace(/,/g, "") : s.replace(/\./g, "").replace(",", ".");

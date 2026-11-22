@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ApiError, DEALER_KEY, STATUS_NO, api, dateTime, getToken, kr, krDec, setToken } from "@/lib/b2b";
+import { ApiError, DEALER_KEY, STATUS_NO, announceDealerChange, api, dateTime, getToken, kr, krDec, setToken } from "@/lib/b2b";
 
 type Me = { company: string; contactName: string; email: string; address: string; discountPct: number };
 type Row = { sku: string; slug: string; name: string; size: string | null; stock: number; retailOre: number; priceOre: number };
@@ -19,7 +19,7 @@ export function Portal() {
   const [tab, setTab] = useState<"katalog" | "ordre" | "konto">("katalog");
   const [error, setError] = useState("");
 
-  const logout = useCallback(() => { setToken(DEALER_KEY, null); router.push("/b2b/logg-inn"); }, [router]);
+  const logout = useCallback(() => { setToken(DEALER_KEY, null); announceDealerChange(); router.push("/b2b/logg-inn"); }, [router]);
   const guard = useCallback((e: unknown) => { if (e instanceof ApiError && e.status === 401) logout(); else setError((e as Error).message); }, [logout]);
 
   const loadCatalog = useCallback(async (t: string) => { try { const c = await api<{ items: Row[]; stockUpdatedAt: string | null }>("/b2b/catalog", { token: t }); setRows(c.items); setStockAt(c.stockUpdatedAt); } catch (e) { guard(e); } }, [guard]);
@@ -59,7 +59,7 @@ export function Portal() {
 }
 
 function Catalog({ token, me, rows, stockAt, onOrdered, guard }: { token: string; me: Me; rows: Row[]; stockAt: string | null; onOrdered: () => void; guard: (e: unknown) => void }) {
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(() => (typeof window === "undefined" ? "" : new URLSearchParams(window.location.search).get("q") ?? ""));
   const [onlyStock, setOnlyStock] = useState(false);
   const [qty, setQty] = useState<Record<string, number>>({});
   const [reference, setReference] = useState("");

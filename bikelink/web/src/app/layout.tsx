@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@fontsource-variable/geist";
 import "@fontsource-variable/geist-mono";
 import { CartProvider } from "@/components/CartProvider";
+import { DealerBar, DealerProvider } from "@/components/DealerProvider";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { JsonLd } from "@/components/JsonLd";
@@ -23,10 +24,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd data={organizationLd} />
         <JsonLd data={websiteLd} />
         <CartProvider>
-          <a className="skip" href="#innhold">Hopp til innhold</a>
-          <Header />
-          <main id="innhold">{children}</main>
-          <Footer />
+          <DealerProvider>
+            <a className="skip" href="#innhold">Hopp til innhold</a>
+            <DealerBar />
+            <Header />
+            <main id="innhold">{children}</main>
+            <Footer />
+          </DealerProvider>
         </CartProvider>
       </body>
     </html>

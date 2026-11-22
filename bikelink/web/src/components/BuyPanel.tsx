@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { API } from "@/lib/b2b";
 import { useCart } from "./CartProvider";
+import { useDealer } from "./DealerProvider";
 
 type V = { sku: string; size: string | null; priceOre: number; available: boolean };
 
@@ -12,6 +13,7 @@ type V = { sku: string; size: string | null; priceOre: number; available: boolea
  */
 export function BuyPanel({ handle, title, image, variants }: { handle: string; title: string; image: string | null; variants: V[] }) {
   const { add } = useCart();
+  const { dealer } = useDealer();
   const [live, setLive] = useState<Record<string, number> | null>(null);
   const [sku, setSku] = useState(variants.find((v) => v.available)?.sku ?? "");
   const [added, setAdded] = useState(false);
@@ -53,9 +55,10 @@ export function BuyPanel({ handle, title, image, variants }: { handle: string; t
       </div>
       <p className={chosen ? "stock ok" : "stock"}>{anyAvail ? (chosen ? (left !== null && left <= 3 ? `Kun ${left} igjen` : "På lager") : "Velg størrelse") : "Utsolgt"}</p>
 
-      <button type="button" className="btn block" disabled={!chosen}
+      {dealer && <Link className="btn block" href={`/b2b/portal?q=${encodeURIComponent(title.replace(/^MMR\s+/, ""))}`}>Bestill i forhandlerportalen (B2B-pris)</Link>}
+      <button type="button" className={`btn block ${dealer ? "ghost" : ""}`} disabled={!chosen}
         onClick={() => { if (!chosen) return; add({ sku: chosen.sku, handle, title, size: chosen.size, priceOre: chosen.priceOre, image }); setAdded(true); }}>
-        {anyAvail ? "Legg i handlekurven" : "Utsolgt"}
+        {anyAvail ? (dealer ? "Kjøp som privatkunde (veil. pris)" : "Legg i handlekurven") : "Utsolgt"}
       </button>
       <p className="added" role="status">{added && <>Lagt i handlekurven. <Link href="/handlekurv">Gå til handlekurven →</Link></>}</p>
     </div>

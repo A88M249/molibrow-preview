@@ -30,13 +30,14 @@ Names: site `bikelink.no` / `www.bikelink.no`, API `api.bikelink.no`, preview `n
 3. Variables (`backend/.env.example`): `DATABASE_URL`, `SITE_URL=https://bikelink.no`,
    `ALLOWED_ORIGINS=https://www.bikelink.no,https://ny.bikelink.no,https://bikelink-web.<your-account>.workers.dev`,
    `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `VIPPS_BASE_URL=https://api.vipps.no`, `VIPPS_CLIENT_ID`,
-   `VIPPS_CLIENT_SECRET`, `VIPPS_SUBSCRIPTION_KEY`, `VIPPS_MSN`, `ADMIN_TOKEN` (long random), `SMTP_URL`, `MAIL_FROM`.
+   `VIPPS_CLIENT_SECRET`, `VIPPS_SUBSCRIPTION_KEY`, `VIPPS_MSN`, `JWT_SECRET` (long random, 32+ characters – signs logins and encrypts 2FA secrets; do not change it later), `SMTP_URL`, `MAIL_FROM`.
 4. Create tables and load the catalogue once from your computer:
    ```
    psql "$DATABASE_URL" -f backend/sql/schema.sql
    cd backend && DATABASE_URL=... npm run seed
    ```
-5. Real stock and dealer prices: open `https://bikelink.no/admin` (paste `ADMIN_TOKEN`) → *Lager og priser* (edit stock per SKU, import the wholesale price list).
+5. Create your owner login: from your computer `cd backend && DATABASE_URL=... npm run admin:create -- you@bikelink.no "Your Name"` (asks for a password of 12+ characters).
+   Then open `https://bikelink.no/admin`, sign in and scan the QR code with an authenticator app (save the recovery codes). Real stock and dealer prices: *Lager og priser* (edit stock per SKU, import the wholesale price list).
    First dealers: *B2B-kontoer* → approve applications (the invite link is shown if email is not set up yet).
 6. In Railway add custom domain `api.bikelink.no`; in Cloudflare DNS add the CNAME Railway shows, **DNS only** (grey cloud).
 

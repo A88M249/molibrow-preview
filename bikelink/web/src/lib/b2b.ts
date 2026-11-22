@@ -65,3 +65,7 @@ export const fileToBase64 = (file: File): Promise<string> =>
     r.onerror = () => reject(new Error("Kunne ikke lese filen."));
     r.readAsDataURL(file);
   });
+
+/** Tell the rest of the page that the dealer signed in or out (the price provider reloads). */
+export const announceDealerChange = () => { try { window.dispatchEvent(new Event("bikelink-dealer-change")); } catch { /* ignore */ } };
+export const dealerLogout = () => { setToken(DEALER_KEY, null); try { sessionStorage.removeItem("bikelink-b2b-catalog"); } catch { /* ignore */ } announceDealerChange(); };

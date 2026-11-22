@@ -47,7 +47,7 @@ Seed sets stock to 1 for available variants (Shopify's public feed has no stock 
 
 ## Back-office API, email, redirects, tests, deploy
 
-**Admin API** (disabled unless `ADMIN_TOKEN` is set; `Authorization: Bearer <token>`):
+**Admin API** (needs a signed-in staff session, `Authorization: Bearer <session token>` from `/admin/auth/*`; the web back-office uses it):
 `GET /admin/orders?status=paid` · `GET /admin/orders/:id` · `POST /admin/orders/:id/fulfil` · `PUT /admin/stock/:sku {"stock": 3}`
 
 **Order emails**: set `SMTP_URL` (+ `MAIL_FROM`) and a Norwegian confirmation is sent the first time an order is confirmed paid.
@@ -86,13 +86,21 @@ Forgot password: `/b2b/glemt`.
 **Prices:** `retail incl. VAT ÷ 1.25 × (1 − dealer discount)`, unless a wholesale price exists for the SKU (override). Load a real price list in
 `/admin` → *Lager og priser* → *Importer prisliste* (`SKU;price in kr excl. VAT` per line, semicolon or tab).
 
-**Back-office** (`/admin`, not indexed): paste `ADMIN_TOKEN` once per browser tab. Tabs: B2B accounts (approve / reject / change discount / re-invite),
-B2B orders (confirm → shipped / cancel returns stock), web-shop orders (mark shipped), stock and wholesale prices.
-If email (`SMTP_URL`) is not set up, the approve step shows the invite link so you can send it yourself.
+**Back-office** (`/admin`, not indexed): individual accounts – **email + password + authenticator-app code (2FA is mandatory)**.
+- First owner: `cd backend && npm run admin:create -- you@bikelink.no "Your Name"` (asks for the password; against production e.g. `railway run npm run admin:create -- …`).
+  At the first login you scan a QR code with Google Authenticator / 1Password / Authy and get 8 one-time recovery codes.
+- Owners add staff under *Brukere* (invite link, valid 3 days; the new user chooses a password and sets up 2FA). Roles: **owner** (everything, incl. users and the activity log), **staff** (everything except users).
+- Lost phone: sign in with a recovery code, or an owner uses *Nullstill 2FA*. Lost owner password: `npm run admin:create -- you@bikelink.no [--reset-2fa]` with database access.
+- Protection: 12+ character passwords, account lock for 15 min after 5 wrong attempts, each code usable once, rate limits, sessions last 8 h and end when a user is disabled / 2FA is reset / the password changes,
+  TOTP secrets are stored encrypted (keep `JWT_SECRET` stable – rotating it means everyone sets up 2FA again), activity log of sensitive actions.
+- Tabs: B2B accounts (approve / reject / **add a B2B partner directly** / discount), B2B orders (confirm → shipped / cancel returns stock), web-shop orders, stock and wholesale prices, stock import, users, my account.
+If email (`SMTP_URL`) is not set up, invite links are shown on screen so you can send them yourself.
+
+**B2B pricing across the site:** an approved partner is marked **B2B**. When signed in (portal login) the whole shop switches to their price **excl. VAT**: a red B2B bar on every page, "B2B fra …" on product cards,
+a "Din B2B-pris" box on product pages, and dealers order via the portal instead of the retail cart. Anonymous visitors never receive these prices (they are fetched with the partner's token, not part of the public pages).
 
 Security notes: passwords are scrypt-hashed; login tokens are HS256 JWTs valid 12 h, kept in sessionStorage; closing an account blocks its token immediately;
-login/apply/forgot are rate limited; forgot-password never reveals whether an email exists; `/admin` is only as strong as `ADMIN_TOKEN` (long random value) –
-for staff with individual logins, add accounts before the team grows.
+login/apply/forgot are rate limited; forgot-password never reveals whether an email exists; 
 Env: `JWT_SECRET` (required for B2B), `B2B_NOTIFY_EMAIL` (default info@bikelink.no).
 
 ## Daily stock file from MMR (CSV by email)

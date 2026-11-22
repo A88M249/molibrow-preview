@@ -48,7 +48,7 @@ p{margin:0 0 1em}
 .header-end{justify-self:end;font:400 .74rem var(--mono);letter-spacing:.05em;text-transform:uppercase}
 .cart-link:hover,.hdr-link:hover{text-decoration:underline;text-underline-offset:6px}
 .mobile-menu{display:none}
-body:has(.hero-full) .header{position:absolute;top:var(--ann);left:0;right:0;background:transparent;color:#fff;border-bottom-color:transparent}
+body:has(.hero-full) .header{position:absolute;top:calc(var(--ann) + var(--bar,0px));left:0;right:0;background:transparent;color:#fff;border-bottom-color:transparent}
 body:has(.hero-full) .logo-dark{display:none}body:has(.hero-full) .logo-light{display:block}
 body:has(.hero-full) .header:hover,body:has(.hero-full) .header:focus-within,body:has(.hero-full) .header.solid{background:var(--bg);color:var(--ink);border-bottom-color:var(--line)}
 body:has(.hero-full) .header:hover .logo-dark,body:has(.hero-full) .header:focus-within .logo-dark,body:has(.hero-full) .header.solid .logo-dark{display:block}
@@ -71,7 +71,7 @@ body:has(.hero-full) .header:hover .logo-light,body:has(.hero-full) .header:focu
 .info-grid a{display:flex;flex-direction:column;gap:4px;border-top:1px solid var(--ink);padding-top:14px;font-size:1.15rem}.info-grid small{color:var(--muted);font-size:.85rem}.info-grid a:hover{color:var(--accent)}
 
 /* mobile drawer */
-.drawer{position:fixed;inset:calc(var(--ann) + 64px) 0 0 0;background:var(--bg);color:var(--ink);overflow:auto;padding:12px 24px 40px;z-index:60}
+.drawer{position:fixed;inset:calc(var(--ann) + var(--bar,0px) + 64px) 0 0 0;background:var(--bg);color:var(--ink);overflow:auto;padding:12px 24px 40px;z-index:60}
 .drawer details{border-bottom:1px solid var(--line)}
 .drawer summary,.drawer-link{display:block;padding:18px 0;font-size:1.3rem;cursor:pointer;list-style:none}.drawer-link{border-bottom:1px solid var(--line)}
 .drawer details ul{list-style:none;margin:0 0 12px;padding:0 0 0 12px}.drawer details li a{display:block;padding:8px 0;color:var(--ink2)}
@@ -261,3 +261,10 @@ a.feature:hover{background:#fafaf9}
 .feature.detail,.feature.account{margin-top:20px;max-width:720px}.account .btn{margin-top:8px}
 @media(max-width:900px){.form-grid,.order-bar,.order-fields{grid-template-columns:1fr}.order-bar{position:static}}
 .btn.sm{padding:10px 16px;font-size:.7rem}.actions{display:flex;gap:6px;flex-wrap:wrap}
+.recovery{background:#fff;padding:14px 18px;border:1px solid var(--line);font:400 1.05rem var(--mono);letter-spacing:.06em;line-height:1.9;margin:10px 0}
+body.has-dealer{--bar:34px}
+.dealer-bar{min-height:34px;box-sizing:border-box;background:var(--accent);color:#fff;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;padding:8px 40px;font:400 .72rem var(--mono);letter-spacing:.04em;text-transform:uppercase}
+.dealer-bar a{text-decoration:underline;margin-right:16px}.dealer-bar .link{color:#fff;font:inherit;text-transform:uppercase}
+.dealer-price{color:var(--accent);margin:2px 0 0;font-weight:500}
+.dealer-block{border:1px solid var(--accent);background:#fff;padding:16px 20px;margin:16px 0}.dealer-block .price.big{margin:.2rem 0;color:var(--accent)}.dealer-block p{margin:0 0 4px}
+@media(max-width:700px){.dealer-bar{padding:8px 20px;font-size:.62rem;flex-wrap:nowrap;overflow:hidden;white-space:nowrap}.dealer-bar span:last-child{display:none}}

@@ -112,3 +112,42 @@ CREATE TABLE IF NOT EXISTS stock_imports (
   applied_by     TEXT
 );
 CREATE INDEX IF NOT EXISTS stock_imports_created_idx ON stock_imports (created_at DESC);
+
+-- ───────────── Back-office staff accounts (password + authenticator app) ─────────────
+CREATE TABLE IF NOT EXISTS admin_users (
+  id              SERIAL PRIMARY KEY,
+  email           TEXT NOT NULL UNIQUE,
+  name            TEXT,
+  role            TEXT NOT NULL DEFAULT 'staff' CHECK (role IN ('owner','staff')),
+  password_hash   TEXT,
+  totp_secret_enc TEXT,                                -- AES-256-GCM encrypted, never stored in plain text
+  totp_enabled    BOOLEAN NOT NULL DEFAULT false,
+  totp_last_step  BIGINT NOT NULL DEFAULT 0,           -- a code can only be used once
+  recovery_hashes TEXT[] NOT NULL DEFAULT '{}',
+  disabled        BOOLEAN NOT NULL DEFAULT false,
+  failed_attempts INTEGER NOT NULL DEFAULT 0,
+  locked_until    TIMESTAMPTZ,
+  session_version INTEGER NOT NULL DEFAULT 0,          -- bump to sign the user out everywhere
+  last_login_at   TIMESTAMPTZ,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS admin_tokens (
+  id         SERIAL PRIMARY KEY,
+  admin_id   INTEGER NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+  token_hash TEXT UNIQUE NOT NULL,
+  purpose    TEXT NOT NULL CHECK (purpose IN ('invite','reset')),
+  expires_at TIMESTAMPTZ NOT NULL,
+  used_at    TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS admin_audit (
+  id       BIGSERIAL PRIMARY KEY,
+  at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+  admin_id INTEGER,
+  email    TEXT,
+  action   TEXT NOT NULL,
+  detail   JSONB NOT NULL DEFAULT '{}',
+  ip       TEXT
+);
+CREATE INDEX IF NOT EXISTS admin_audit_at_idx ON admin_audit (at DESC);

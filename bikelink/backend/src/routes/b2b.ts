@@ -2,7 +2,7 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { hashPassword, newOneTimeToken, sha256, signToken, verifyPassword, verifyToken } from "../auth.js";
 import { OrderError, VAT_RATE, catalogFor, placeB2bOrder } from "../b2b.js";
-import { config } from "../config.js";
+import { config, rateLimit } from "../config.js";
 import { pool } from "../db.js";
 import { sendMail } from "../mail.js";
 
@@ -52,7 +52,7 @@ async function requireDealer(req: FastifyRequest, reply: FastifyReply): Promise<
   return { id: a.id, company: a.company, contactName: a.contact_name, email: a.email, address: a.address, discountPct: Number(a.discount_pct) };
 }
 
-const limit = (max: number) => ({ config: { rateLimit: { max, timeWindow: "1 minute" } } });
+const limit = rateLimit;
 
 export async function b2bRoutes(app: FastifyInstance) {
   app.addHook("onRequest", async (req, reply) => {

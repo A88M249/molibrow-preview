@@ -4,9 +4,10 @@ import { after, before, describe, test } from "node:test";
 
 const url = process.env.DATABASE_URL && /test/i.test(new URL(process.env.DATABASE_URL).pathname) ? process.env.DATABASE_URL : undefined;
 Object.assign(process.env, {
+  RATE_LIMIT_MULTIPLIER: "1000",
   SITE_URL: "http://localhost:3000", STRIPE_SECRET_KEY: "sk_test_x", STRIPE_WEBHOOK_SECRET: "whsec_x",
   VIPPS_BASE_URL: "http://127.0.0.1:9", VIPPS_CLIENT_ID: "x", VIPPS_CLIENT_SECRET: "x", VIPPS_SUBSCRIPTION_KEY: "x", VIPPS_MSN: "x",
-  ADMIN_TOKEN: "test-admin-token", JWT_SECRET: "test-jwt-secret-with-enough-length-1234567890",
+  JWT_SECRET: "test-jwt-secret-with-enough-length-1234567890",
   STOCK_INGEST_TOKEN: "test-ingest-token", STOCK_ALLOWED_SENDERS: "stock@mmrbikes.test, @mmr-office.test",
 });
 
@@ -36,7 +37,7 @@ describe("CSV parsing", () => {
 
   test("quantity formats", async () => {
     const { parseQty } = await import("../src/stock-csv.js");
-    for (const [raw, want] of [["12", 12], ["12,0", 12], ["12.0", 12], ["1.234", 1234], ["1 234", 1234], ["1,234.00", 1234], ["1.234,00", 1234], ["0,5", 0], ["-3", 0], ["abc", null], ["", null]] as const)
+    for (const [raw, want] of [["12", 12], ["12,0", 12], ["12.0", 12], ["1.234", 1234], ["1 234", 1234], ["1,234.00", 1234], ["1.234,00", 1234], ["0,5", 0], ["-3", 0], ["+10", 10], ["+5", 5], ["abc", null], ["", null]] as const)
       assert.equal(parseQty(raw), want, raw);
   });
 
@@ -70,14 +71,32 @@ describe("email parsing", () => {
   });
 });
 
+describe("MMR's real export (Disponibilidad productos)", () => {
+  const fixture = () => readFileSync(new URL("./fixtures/mmr-disponibilidad.csv", import.meta.url));
+
+  test("columns, Windows-1252, quoted fields, and +10 (= 10 or more) are all understood", async () => {
+    const { parseStockCsv } = await import("../src/stock-csv.js");
+    const r = parseStockCsv(fixture());
+    assert.equal(r.delimiter, ";"); assert.equal(r.skuColumn, "Cod. Artículo");
+    assert.equal(r.qtyColumn, "Disponible inmediato", "must not pick 'Disponible próximamente' (arriving later)");
+    assert.equal(r.skipped, 0);
+    const by = new Map(r.rows.map((x) => [x.sku, x.qty]));
+    assert.equal(by.get("064805"), 10, "+10");
+    assert.equal(by.get("082699"), 3);
+    assert.equal(by.get("082705"), 0, "a listed row with 0 is real information");
+    assert.equal(by.get("075021"), 10);
+  });
+});
+
 describe("stock sync", { skip: !url }, () => {
   let app: Awaited<ReturnType<(typeof import("../src/app.js"))["buildApp"]>>;
   let pool: typeof import("../src/db.js")["pool"];
   let imp: typeof import("../src/stock-import.js");
   let config: typeof import("../src/config.js")["config"];
-  const admin = { authorization: "Bearer test-admin-token" };
+  let admin: Record<string, string> = {};
   const stock = async (sku: string) => (await pool.query("SELECT stock FROM products WHERE sku = $1", [sku])).rows[0].stock as number;
   const reset = async () => {
+    config.stock.missing = "keep"; // most tests assume untouched SKUs; the "zero" behaviour has its own test
     await pool.query("TRUNCATE order_items, orders, b2b_order_items, b2b_orders, b2b_accounts, stock_imports, products RESTART IDENTITY CASCADE");
     await pool.query(`INSERT INTO products (sku, slug, name, size, price_ore, stock, active) VALUES
       ('082699','bike-a','Bike A','S',1000000,5,true), ('080755','bike-b','Bike B','M',1000000,2,true), ('081000','bike-c','Bike C','L',1000000,0,true), ('999999','old','Old','M',1,9,false)`);
@@ -85,6 +104,8 @@ describe("stock sync", { skip: !url }, () => {
 
   before(async () => {
     ({ pool } = await import("../src/db.js"));
+    await pool.query(readFileSync(new URL("../sql/schema.sql", import.meta.url), "utf8"));
+    admin = await (await import("./helpers.js")).adminHeaders(pool);
     ({ config } = await import("../src/config.js"));
     await pool.query(readFileSync(new URL("../sql/schema.sql", import.meta.url), "utf8"));
     imp = await import("../src/stock-import.js");

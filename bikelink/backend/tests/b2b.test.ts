@@ -5,9 +5,10 @@ import { after, before, describe, test } from "node:test";
 
 const url = process.env.DATABASE_URL && /test/i.test(new URL(process.env.DATABASE_URL).pathname) ? process.env.DATABASE_URL : undefined;
 Object.assign(process.env, {
+  RATE_LIMIT_MULTIPLIER: "1000",
   SITE_URL: "http://localhost:3000", STRIPE_SECRET_KEY: "sk_test_x", STRIPE_WEBHOOK_SECRET: "whsec_x",
   VIPPS_BASE_URL: "http://127.0.0.1:9", VIPPS_CLIENT_ID: "x", VIPPS_CLIENT_SECRET: "x", VIPPS_SUBSCRIPTION_KEY: "x", VIPPS_MSN: "x",
-  ADMIN_TOKEN: "test-admin-token", JWT_SECRET: "test-jwt-secret-with-enough-length-1234567890",
+  JWT_SECRET: "test-jwt-secret-with-enough-length-1234567890",
 });
 
 test("wholesale price: excl. VAT, minus discount, override wins", async () => {
@@ -38,7 +39,7 @@ test("tokens: signature, expiry and tampering", async () => {
 describe("dealer portal", { skip: !url }, () => {
   let app: Awaited<ReturnType<(typeof import("../src/app.js"))["buildApp"]>>;
   let pool: typeof import("../src/db.js")["pool"];
-  const admin = { authorization: "Bearer test-admin-token" };
+  let admin: Record<string, string> = {};
   const apply = { company: "Syklene AS", orgNr: "935095034", contactName: "Kari Nordmann", email: "kari@syklene.no", phone: "+47 900 00 000", address: "Storgata 1, 0155 Oslo", businessType: "Sykkelbutikk" };
   let token = "", accountId = 0;
 
@@ -60,6 +61,8 @@ describe("dealer portal", { skip: !url }, () => {
 
   before(async () => {
     ({ pool } = await import("../src/db.js"));
+    await pool.query(readFileSync(new URL("../sql/schema.sql", import.meta.url), "utf8"));
+    admin = await (await import("./helpers.js")).adminHeaders(pool);
     await pool.query("TRUNCATE order_items, orders, products, b2b_accounts RESTART IDENTITY CASCADE");
     await pool.query(readFileSync(new URL("../sql/schema.sql", import.meta.url), "utf8"));
     await pool.query(`INSERT INTO products (sku, slug, name, size, price_ore, stock) VALUES

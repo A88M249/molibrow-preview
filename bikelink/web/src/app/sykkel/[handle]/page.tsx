@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BuyPanel } from "@/components/BuyPanel";
+import { DealerPriceBlock } from "@/components/DealerProvider";
 import { Spin360 } from "@/components/Spin360";
 import { spinFrames } from "@/lib/spin";
 import { LifeImage } from "@/components/LifeImage";
@@ -80,6 +81,7 @@ export default async function ProductPage({ params }: Props) {
           )}
           <p className="price big">{kr(low)}{high !== low && <span className="muted"> – {kr(high)}</span>} {was && <s>{kr(was)}</s>}</p>
           <p className="muted small">Inkl. mva. Frakt er inkludert i prisen.</p>
+          <DealerPriceBlock slug={p.handle} />
           <BuyPanel handle={p.handle} title={p.title} image={p.images[0]?.src ?? null} variants={p.variants.map((v) => ({ sku: v.sku, size: v.size, priceOre: v.priceOre, available: v.available }))} />
           <ul className="facts">
             <li><strong>Levering hjem</strong> eller hent ferdig montert hos forhandler</li>

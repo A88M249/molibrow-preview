@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { DEALER_KEY, api, setToken } from "@/lib/b2b";
+import { DEALER_KEY, announceDealerChange, api, setToken } from "@/lib/b2b";
 
 function useSubmit<T extends unknown[]>(fn: (...a: T) => Promise<void>) {
   const [busy, setBusy] = useState(false);
@@ -54,6 +54,7 @@ export function LoginForm() {
     const v = Object.fromEntries(new FormData(f)) as Record<string, string>;
     const r = await api<{ token: string }>("/b2b/login", { body: { email: v.email, password: v.password } });
     setToken(DEALER_KEY, r.token);
+    announceDealerChange();
     router.push("/b2b/portal");
   });
   return (

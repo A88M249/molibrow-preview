@@ -4,10 +4,12 @@ function need(name: string): string {
   return v;
 }
 
+/** Per-route rate limits are multiplied by this (default 1). Tests raise it so they can log in many times quickly. */
+export const rateLimit = (max: number) => ({ config: { rateLimit: { max: max * Number(process.env.RATE_LIMIT_MULTIPLIER ?? 1), timeWindow: "1 minute" } } });
+
 const opt = (name: string): string | undefined => process.env[name] || undefined;
 
 export const config = {
-  adminToken: opt("ADMIN_TOKEN"),
   // Signs dealer login tokens. Without it the B2B portal is disabled (503).
   jwtSecret: opt("JWT_SECRET"),
   stock: {
@@ -19,8 +21,9 @@ export const config = {
     autoApply: process.env.STOCK_AUTO_APPLY === "true",
     // Refuse (hold for review) if the total stock would fall by more than this share.
     maxDropPct: Number(process.env.STOCK_MAX_DROP_PCT ?? 60),
-    // What to do with SKUs that are not in the file: keep their stock, or set it to 0 (only for files that list everything).
-    missing: (process.env.STOCK_MISSING === "zero" ? "zero" : "keep") as "keep" | "zero",
+    // What to do with SKUs that are not in the file. MMR's daily file only lists what MMR has, so a missing SKU means "none available": zero (default).
+    // "keep" leaves their stock alone. Either way a file that covers less than half of the products is held for review.
+    missing: (process.env.STOCK_MISSING === "keep" ? "keep" : "zero") as "keep" | "zero",
     skuColumn: opt("STOCK_SKU_COLUMN"),
     qtyColumn: opt("STOCK_QTY_COLUMN"),
     notifyEmail: opt("STOCK_NOTIFY_EMAIL") ?? process.env.B2B_NOTIFY_EMAIL ?? "info@bikelink.no",

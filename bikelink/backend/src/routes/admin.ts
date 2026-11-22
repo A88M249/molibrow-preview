@@ -1,23 +1,17 @@
 import type { FastifyInstance } from "fastify";
-import { timingSafeEqual } from "node:crypto";
 import { z } from "zod";
+import { audit, requireAdmin } from "../admin-auth.js";
 import { OrderError, setB2bOrderStatus } from "../b2b.js";
 import { config } from "../config.js";
 import { sendMail } from "../mail.js";
 import { CsvError } from "../stock-csv.js";
 import { applyImport, diffFor, ingestStockFile, rejectImport, safetyProblem } from "../stock-import.js";
-import { createOneTimeLink, inviteUrl } from "./b2b.js";
+import { createOneTimeLink, inviteUrl, validOrgNr } from "./b2b.js";
 import { pool } from "../db.js";
 
-const same = (a: string, b: string) => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b));
-
-/** Back-office API. Disabled (404) unless ADMIN_TOKEN is set; every call needs `Authorization: Bearer <token>`. */
+/** Back-office API. Every call needs a staff session (email + password + authenticator code, see admin-auth.ts). */
 export async function adminRoutes(app: FastifyInstance) {
-  app.addHook("onRequest", async (req, reply) => {
-    if (!config.adminToken) return reply.code(404).send({ error: "Not found" });
-    const given = (req.headers.authorization ?? "").replace(/^Bearer\s+/i, "");
-    if (!same(given, config.adminToken)) return reply.code(401).send({ error: "Unauthorized" });
-  });
+  app.addHook("onRequest", requireAdmin());
 
   app.get<{ Querystring: { status?: string } }>("/admin/orders", async (req) => {
     const status = z.enum(["pending", "paid", "fulfilled", "cancelled"]).safeParse(req.query.status);
@@ -39,6 +33,7 @@ export async function adminRoutes(app: FastifyInstance) {
   app.post<{ Params: { id: string } }>("/admin/orders/:id/fulfil", async (req, reply) => {
     if (!z.string().uuid().safeParse(req.params.id).success) return reply.code(400).send({ error: "Bad id" });
     const { rowCount } = await pool.query("UPDATE orders SET status = 'fulfilled' WHERE id = $1 AND status = 'paid'", [req.params.id]);
+    if (rowCount) await audit(req, "order.fulfilled", { id: req.params.id });
     return rowCount ? { ok: true } : reply.code(409).send({ error: "Only paid orders can be fulfilled" });
   });
 
@@ -46,6 +41,7 @@ export async function adminRoutes(app: FastifyInstance) {
     const body = z.object({ stock: z.number().int().min(0).max(10000) }).safeParse(req.body);
     if (!body.success) return reply.code(400).send({ error: body.error.flatten() });
     const { rowCount } = await pool.query("UPDATE products SET stock = $2 WHERE sku = $1", [req.params.sku, body.data.stock]);
+    if (rowCount) await audit(req, "stock.set", { sku: req.params.sku, stock: body.data.stock });
     return rowCount ? { ok: true } : reply.code(404).send({ error: "Unknown SKU" });
   });
   // ── stock & wholesale prices ──
@@ -71,6 +67,7 @@ export async function adminRoutes(app: FastifyInstance) {
       if (p.priceOre === null) await pool.query("DELETE FROM wholesale_prices WHERE sku = $1", [p.sku]);
       else await pool.query("INSERT INTO wholesale_prices (sku, price_ore) VALUES ($1,$2) ON CONFLICT (sku) DO UPDATE SET price_ore = $2", [p.sku, p.priceOre]);
     }
+    await audit(req, "wholesale.prices", { count: body.data.prices.length });
     return { ok: true, updated: body.data.prices.length };
   });
 
@@ -83,6 +80,30 @@ export async function adminRoutes(app: FastifyInstance) {
     return rows;
   });
 
+  /** Add a B2B partner yourself (e.g. an existing customer): created as approved, with an invite link to choose a password. */
+  app.post("/admin/b2b/accounts", async (req, reply) => {
+    const body = z.object({
+      company: z.string().trim().min(2).max(120), orgNr: z.string().refine(validOrgNr, "Ugyldig organisasjonsnummer"), contactName: z.string().trim().min(2).max(120),
+      email: z.string().trim().toLowerCase().email().max(200), phone: z.string().trim().min(5).max(40), address: z.string().trim().min(5).max(300),
+      businessType: z.string().trim().min(2).max(60).default("Forhandler"), discountPct: z.number().min(0).max(90).default(0),
+    }).safeParse(req.body);
+    if (!body.success) return reply.code(400).send({ error: body.error.flatten() });
+    const b = body.data;
+    let id: number;
+    try {
+      ({ rows: [{ id }] } = await pool.query(
+        `INSERT INTO b2b_accounts (company, org_nr, contact_name, email, phone, address, business_type, status, discount_pct, approved_at) VALUES ($1,$2,$3,$4,$5,$6,$7,'approved',$8, now()) RETURNING id`,
+        [b.company, b.orgNr.replace(/\s/g, ""), b.contactName, b.email, b.phone, b.address, b.businessType, b.discountPct]));
+    } catch (e) {
+      if ((e as { code?: string }).code === "23505") return reply.code(409).send({ error: "Det finnes allerede en konto med denne e-postadressen." });
+      throw e;
+    }
+    const url = inviteUrl(await createOneTimeLink(id, "invite", 24 * 7));
+    const sent = await sendMail(b.email, "Kontoen din hos BikeLink B2B er opprettet", `Hei ${b.contactName},\n\nDu er lagt til som B2B-partner. Opprett passord her (lenken gjelder i 7 dager):\n${url}\n\nBikeLink AS`);
+    await audit(req, "b2b.created", { id, company: b.company, discountPct: b.discountPct });
+    return reply.code(201).send({ id, inviteUrl: url, emailSent: sent });
+  });
+
   app.post<{ Params: { id: string } }>("/admin/b2b/accounts/:id/approve", async (req, reply) => {
     const id = Number(req.params.id);
     const body = z.object({ discountPct: z.number().min(0).max(90).default(0) }).safeParse(req.body ?? {});
@@ -90,6 +111,7 @@ export async function adminRoutes(app: FastifyInstance) {
     const { rows: [a] } = await pool.query(
       "UPDATE b2b_accounts SET status = 'approved', discount_pct = $2, approved_at = COALESCE(approved_at, now()) WHERE id = $1 RETURNING contact_name, email, (password_hash IS NOT NULL) AS activated", [id, body.data.discountPct]);
     if (!a) return reply.code(404).send({ error: "Not found" });
+    await audit(req, "b2b.approved", { id, discountPct: body.data.discountPct });
     if (a.activated) return { ok: true, invited: false };
     const url = inviteUrl(await createOneTimeLink(id, "invite", 24 * 7));
     const sent = await sendMail(a.email, "Kontoen din hos BikeLink B2B er godkjent",
@@ -99,6 +121,7 @@ export async function adminRoutes(app: FastifyInstance) {
 
   app.post<{ Params: { id: string } }>("/admin/b2b/accounts/:id/reject", async (req, reply) => {
     const { rowCount } = await pool.query("UPDATE b2b_accounts SET status = 'rejected' WHERE id = $1", [Number(req.params.id) || 0]);
+    if (rowCount) await audit(req, "b2b.rejected", { id: req.params.id });
     return rowCount ? { ok: true } : reply.code(404).send({ error: "Not found" });
   });
 
@@ -106,6 +129,7 @@ export async function adminRoutes(app: FastifyInstance) {
     const body = z.object({ discountPct: z.number().min(0).max(90) }).safeParse(req.body);
     if (!body.success) return reply.code(400).send({ error: body.error.flatten() });
     const { rowCount } = await pool.query("UPDATE b2b_accounts SET discount_pct = $2 WHERE id = $1", [Number(req.params.id) || 0, body.data.discountPct]);
+    if (rowCount) await audit(req, "b2b.discount", { id: req.params.id, discountPct: body.data.discountPct });
     return rowCount ? { ok: true } : reply.code(404).send({ error: "Not found" });
   });
 
@@ -131,6 +155,7 @@ export async function adminRoutes(app: FastifyInstance) {
     if (!body.success || !z.string().uuid().safeParse(req.params.id).success) return reply.code(400).send({ error: "Bad request" });
     try {
       await setB2bOrderStatus(req.params.id, body.data.status);
+      await audit(req, "b2b.order." + body.data.status, { id: req.params.id });
       return { ok: true };
     } catch (e) {
       if (e instanceof OrderError) return reply.code(409).send({ error: e.message });
@@ -162,15 +187,19 @@ export async function adminRoutes(app: FastifyInstance) {
     if (!body.success) return reply.code(400).send({ error: body.error.flatten() });
     const content = body.data.csvBase64 ? Buffer.from(body.data.csvBase64, "base64") : Buffer.from(body.data.csv!, "utf8");
     const r = await ingestStockFile({ content, filename: body.data.filename ?? "opplastet.csv", source: "upload", autoApply: false });
+    await audit(req, "stock.import.uploaded", { id: r.id, status: r.status });
     return reply.code(r.status === "failed" ? 422 : 201).send(r);
   });
 
   app.post<{ Params: { id: string } }>("/admin/stock-imports/:id/apply", async (req, reply) => {
     const body = z.object({ force: z.boolean().optional() }).safeParse(req.body ?? {});
-    try { return await applyImport(Number(req.params.id) || 0, "admin", { force: body.success ? body.data.force : false }); }
+    try { const r = await applyImport(Number(req.params.id) || 0, req.admin!.email, { force: body.success ? body.data.force : false }); await audit(req, "stock.import.apply", { id: req.params.id, status: r.status, force: body.success ? body.data.force : false }); return r; }
     catch (e) { if (e instanceof CsvError) return reply.code(409).send({ error: e.message }); throw e; }
   });
 
-  app.post<{ Params: { id: string } }>("/admin/stock-imports/:id/reject", async (req, reply) =>
-    (await rejectImport(Number(req.params.id) || 0, "admin")) ? { ok: true } : reply.code(409).send({ error: "Only pending imports can be rejected" }));
+  app.post<{ Params: { id: string } }>("/admin/stock-imports/:id/reject", async (req, reply) => {
+    const ok = await rejectImport(Number(req.params.id) || 0, req.admin!.email);
+    if (ok) await audit(req, "stock.import.reject", { id: req.params.id });
+    return ok ? { ok: true } : reply.code(409).send({ error: "Only pending imports can be rejected" });
+  });
 }
