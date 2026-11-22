@@ -1,0 +1,38 @@
+# Publishes the built site in ./studio to GitHub Pages.
+# One-time setup in the repo: Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
+# Custom domain (molibrowstudio.no): set it under Settings -> Pages after the DNS records point to GitHub.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths: ['studio/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sanity check the build output
+        run: |
+          test -f studio/index.html && test -f studio/sitemap.xml && test -f studio/robots.txt
+          ! grep -rq "example.com" studio --include=*.html --include=*.xml --include=*.txt
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: studio
+      - id: deployment
+        uses: actions/deploy-pages@v4

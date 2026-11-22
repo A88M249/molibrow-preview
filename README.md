@@ -21,3 +21,8 @@ SITE_URL=https://your-domain.no python3 tools/build_site.py
 ```
 Optional: `SPOKES_API` (default `https://api.spokes.no`), `SPOKES_APP` (default `https://app.spokesworkshop.com`, used for the "view your booking" link).
 The page (`studio/assets/booking.js`) uses Spokes' public endpoints under `/v1/public/bbk/w/:slug/` (`info`, `availability`, `dropoff`, `booking`) and falls back to Timma if the API or workshop is unavailable.
+
+### Going live
+Pushing to `main` runs `.github/workflows/pages.yml`, which publishes `studio/` to GitHub Pages (production build uses `SITE_URL=https://molibrowstudio.no`).
+One-time: Settings -> Pages -> Source: "GitHub Actions", then add the custom domain and the DNS records GitHub shows.
+Booking currently goes to Timma; the native Spokes page is not built unless `BOOKING_PROVIDER=spokes`.

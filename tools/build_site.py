@@ -502,7 +502,8 @@ def page_area(ak):
 def page_privacy():
     key, path = 'privacy', slug_path('privacy', L)
     cr_html, cr_ld = crumbs(path, [(t(NAV_LABEL['privacy']), None)])
-    secs = ''.join(f'<h2 style="font-size:24px;margin:40px 0 12px">{esc(t(h))}</h2><p>{esc(t(b))}</p>' for h, b in PRIVACY['sections'])
+    sections = [PRIVACY_TIMMA.get(i, sec) if PROVIDER != 'spokes' else sec for i, sec in enumerate(PRIVACY['sections'])]
+    secs = ''.join(f'<h2 style="font-size:24px;margin:40px 0 12px">{esc(t(h))}</h2><p>{esc(t(b))}</p>' for h, b in sections)
     body = f'''<main id="main"><section class="phero solo"><div class="wrap phero-grid"><div>{cr_html}<h1>{esc(t(PRIVACY['h1']))}</h1></div></div></section>
 <section><div class="wrap"><div class="prose" style="max-width:46em">{secs}</div></div></section></main>'''
     write(path, head(path, key, t(PRIVACY['title']), t(PRIVACY['desc']), [cr_ld]) + header(path, key, True) + body + footer(path))
@@ -651,13 +652,19 @@ def sitemap():
 
 def main():
     global L
+    if PROVIDER != 'spokes':  # no native booking page unless enabled: remove stale output from earlier builds
+        import shutil
+        for stale in ('bestill', os.path.join('en', 'book')):
+            shutil.rmtree(os.path.join(OUT, stale), ignore_errors=True)
     for i in (0, 1):
         L = i
         page_home(); page_treatments()
         for k in SERVICES:
             page_service(k)
         page_gift(); page_about(); page_gallery(); page_contact(); page_faq()
-        page_privacy(); page_book()
+        page_privacy()
+        if PROVIDER == 'spokes':
+            page_book()
     L = 0
     page_areas_hub()
     for ak in AREA_ORDER:

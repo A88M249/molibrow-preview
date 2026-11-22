@@ -164,3 +164,14 @@ BOOK = dict(
     lead=("Velg behandling, dag og send bestillingen. Du får bekreftelse på SMS eller e-post.",
           "Choose a treatment and a day, then send your booking. You get a confirmation by SMS or email."),
 )
+
+
+# Privacy wording used while bookings are handled by Timma (Spokes not enabled). Keys = index in PRIVACY['sections'].
+PRIVACY_TIMMA = {
+    1: (("Hvilke opplysninger samler vi inn?", "What data do we collect?"),
+        ("Når du bestiller time via Timma oppgir du navn, kontaktinformasjon, ønsket behandling og tidspunkt. Nettsiden vår har ingen skjemaer og bruker ikke analyse- eller markedsføringsinfokapsler.",
+         "When you book via Timma you provide your name, contact details, the treatment and time you want. This website has no forms and does not use analytics or marketing cookies.")),
+    3: (("Hvem får tilgang?", "Who has access?"),
+        ("Bestillinger gjøres hos Timma (bestill.timma.no), som behandler opplysningene etter sine egne vilkår og personvernerklæring. Vi selger ikke opplysningene dine.",
+         "Bookings are made with Timma (bestill.timma.no), which processes the data under its own terms and privacy policy. We do not sell your data.")),
+}
