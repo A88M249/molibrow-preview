@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/Blocks";
+import { LIFE } from "@/lib/life";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbLd } from "@/lib/seo";
 
@@ -16,7 +17,7 @@ export default function Contact() {
   return (
     <>
       <JsonLd data={breadcrumbLd([{ name: "Forside", path: "/" }, { name: "Kontakt", path: "/kontakt" }])} />
-      <PageHero eyebrow="Kundeservice" title="Kontakt BikeLink.no" lead="Vi hjelper deg med valg av modell og størrelse, bestillinger, levering, service og garanti.">
+      <PageHero photo={LIFE.beach} position="50% 55%" eyebrow="Kundeservice" title="Kontakt BikeLink.no" lead="Vi hjelper deg med valg av modell og størrelse, bestillinger, levering, service og garanti.">
         <a className="btn" href="tel:+4746411906">Ring +47 46 41 19 06</a>
         <a className="btn ghost" href="mailto:info@bikelink.no">info@bikelink.no</a>
       </PageHero>

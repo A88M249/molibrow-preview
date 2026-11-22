@@ -68,3 +68,15 @@ CI: `.github/workflows/bikelink.yml`.
   grouped under one card with a colour switcher. All other products are separate model/spec levels (Aelion 00/10/30/50 …).
 - 7 products had internal admin notes as their public description (never shown by the new site, see `needsReview`).
 - 3 variants had no SKU and 14 shared SKUs; the export makes SKUs unique. Fix them in Shopify too.
+
+## ⚠ Legal texts need review before launch
+`web/data/legal/*.json` is the live Shopify text, copied verbatim (`npm run import:pages` re-imports it). After the move the facts change:
+- **Personvern**: describes Shopify as the platform/data controller. The new stack is Cloudflare (hosting/CDN), Railway (database), Stripe, Klarna, Vipps and your SMTP provider – list them as processors.
+- **Vilkår**: names "Move Forward Holding" as operator while the site footer says BikeLink AS (org.nr. 935 095 034 MVA) – confirm the correct legal entity.
+- **Juridisk merknad**: talks about a cookie consent flow. The new site sets no tracking cookies (the cart uses the browser's localStorage); if you add analytics, add a consent banner and update the text.
+- **Frakt**: carriers listed (Posten, PostNord, FedEx, DHL) – confirm they match what you will actually use.
+Have these read by whoever is responsible for legal/compliance.
+
+## Not migrated (needs a decision)
+- **B2B portal**: the live B2B sign-up and wholesale prices run on a Shopify app (wholesale registration). The new `/b2b` page takes applications by email; a real dealer portal (login, wholesale prices, stock, orders) still has to be built or replaced.
+- **People photos**: dealer/staff portraits on the old site were not copied (photos of identifiable people – get permission first).

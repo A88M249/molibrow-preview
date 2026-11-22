@@ -15,7 +15,7 @@ export default function About() {
   return (
     <>
       <JsonLd data={breadcrumbLd([{ name: "Forside", path: "/" }, { name: "Om oss", path: "/om-oss" }])} />
-      <PageHero photo={LIFE.curve} position="60% 50%" eyebrow="Om oss" title="Dette er BikeLink.no" lead="BikeLink.no er offisiell distributør av MMR Bikes i Norge. Vi kombinerer netthandel med ferdig montering, utlevering og service hos partnere over hele landet.">
+      <PageHero photo={LIFE.roadMountain} position="50% 55%" eyebrow="Om oss" title="Dette er BikeLink.no" lead="BikeLink.no er offisiell distributør av MMR Bikes i Norge. Vi kombinerer netthandel med ferdig montering, utlevering og service hos partnere over hele landet.">
         <Link className="btn" href="/landevei">Se alle sykler</Link>
         <Link className="btn ghost" href="/forhandlere">Finn forhandler</Link>
       </PageHero>

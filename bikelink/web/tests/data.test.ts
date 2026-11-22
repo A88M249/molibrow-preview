@@ -37,8 +37,16 @@ test("prices are formatted the Norwegian way", () => {
 });
 
 test("redirects point to real routes", () => {
-  const ok = new Set(["/", "/forhandlere", "/service", "/om-oss", "/kontakt", "/handlekurv", ...CATEGORY_IDS.map((c) => `/${c}`)]);
+  const ok = new Set(["/", "/forhandlere", "/service", "/om-oss", "/kontakt", "/handlekurv", "/b2b", "/sykkelinnbytte", "/vilkar", "/angrerett", "/frakt", "/personvern", "/juridisk", ...CATEGORY_IDS.map((c) => `/${c}`)]);
   const redirects: { source: string; destination: string }[] = JSON.parse(readFileSync(new URL("../data/redirects.json", import.meta.url), "utf8"));
   assert.ok(redirects.length > 20);
   for (const r of redirects) assert.ok(ok.has(r.destination.split("#")[0]), `${r.source} -> ${r.destination}`);
+});
+
+test("legal pages were imported and contain no raw HTML or scripts", () => {
+  for (const slug of ["vilkar", "angrerett", "frakt", "personvern", "juridisk"]) {
+    const doc = JSON.parse(readFileSync(new URL(`../data/legal/${slug}.json`, import.meta.url), "utf8"));
+    assert.ok(doc.title && doc.blocks.length > 5, slug);
+    assert.ok(!/<\/?(script|iframe|style)\b/i.test(JSON.stringify(doc)), `${slug} contains markup`);
+  }
 });

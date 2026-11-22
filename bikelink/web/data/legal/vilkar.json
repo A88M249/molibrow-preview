@@ -1,0 +1,469 @@
+{
+ "slug": "vilkar",
+ "title": "Vilkår for bruk",
+ "source": "https://bikelink.no/policies/terms-of-service",
+ "blocks": [
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vilkår og betingelser for BikeLink.no",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Sist oppdatert: 28.11.2025",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Velkommen til BikeLink.no. Disse vilkårene beskriver reglene for bruk av nettstedet vårt og våre tjenester. Ved å bruke eller handle på BikeLink.no godtar du disse vilkårene. Dersom du ikke ønsker å godta vilkårene, ber vi deg avstå fra å bruke tjenestene våre."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "1. Generell informasjon",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "BikeLink.no er en norsk nettbutikk drevet av Move Forward Holding, og tilbyr direkte-til-forbruker salg av sykler og relaterte produkter. Vårt mål er å levere en sømløs og trygg handleopplevelse med fokus på kvalitet, åpenhet og førsteklasses kundeservice."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "2. Bestillinger og betaling",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "2.1 Bestilling:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Bestillinger kan gjøres via nettsiden. Etter mottatt bestilling får du en ordrebekreftelse på e-post."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "2.2 Betalingsmetoder:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Vi aksepterer bankkort, kredittkort og andre digitale betalingsløsninger tilgjengelig i kassen."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "2.3 Ordrebehandling:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Bestillinger behandles når betalingen er fullført. BikeLink.no forbeholder seg retten til å kansellere bestillinger ved lagerfeil, prisfeil eller mistanke om svindel."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "2.4 Priser:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Alle priser er oppgitt i NOK og inkluderer MVA med mindre annet er spesifisert. Prisendringer kan forekomme uten forvarsel."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "3. Frakt og levering",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "3.1 Leveringstid:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Estimert leveringstid oppgis i kassen. Forsinkelser som skyldes forhold utenfor vår kontroll gir ikke grunnlag for refusjon."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "3.2 Fraktkostnader:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Fraktkostnad beregnes automatisk ved utsjekk basert på adresse og ordrestørrelse."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "3.3 Leveringsadresse:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Kunden er ansvarlig for riktig adressering. BikeLink.no er ikke ansvarlig for forsinkelser eller tapte forsendelser som følge av feil adresseinformasjon."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "4. Retur og refusjon",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "4.1 Angrerett:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Du har 14 dagers returrett fra mottatt vare, forutsatt at produktet er ubrukt, uskadet og i original emballasje."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "4.2 Returforsendelse:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Kunden dekker returkostnadene, med mindre varen er defekt eller feil levert."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "4.3 Refusjon:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Godkjente refusjoner behandles innen 14 dager etter at vi har mottatt og inspisert varen."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "4.4 Unntak:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Tilpassede sykler og personlig tilpassede produkter kan ikke returneres med mindre de er defekte."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "5. Garanti og reparasjoner",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "5.1 Produsentgaranti:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Alle sykler solgt via BikeLink.no leveres med produsentens garanti. Garantiperioden varierer per merke."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "5.2 Garantikrav:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Krav må sendes inn med kjøpsbevis og dokumentasjon/bilder av feilen. Garantien dekker ikke normal slitasje, ulykker, misbruk eller manglende vedlikehold."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "5.3 Reparasjoner:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "BikeLink.no samarbeider med sertifiserte verksteder for service og reparasjoner. Timebestilling kan gjøres via nettsiden."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "6. Brukeransvar",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "6.1 Aldersgrense:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Kjøper må være over 18 år eller ha samtykke fra foresatt."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "6.2 Misbruk:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Det er ikke tillatt å misbruke nettstedet ved svindel, hacking, spredning av skadelig programvare eller andre ulovlige handlinger."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "6.3 Tilgang:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "BikeLink.no kan stenge brukerens tilgang ved brudd på vilkårene."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "7. Ansvarsbegrensning",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "BikeLink.no er ikke ansvarlig for indirekte tap, som tapt fortjeneste, datatap eller avbrudd i virksomhet. Vårt totale erstatningsansvar begrenses til produktets kjøpesum."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "8. Personvern og databeskyttelse",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "BikeLink.no følger GDPR og norsk personvernlovgivning. Personopplysninger brukes kun til ordrebehandling, kundeservice, drift og markedsføring dersom du har gitt samtykke."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Se vår personvernerklæring for detaljer."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "9. Lovvalg og tvister",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Disse vilkårene er underlagt norsk lov. Eventuelle tvister behandles i norske domstoler med mindre annet er skriftlig avtalt."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "10. Kontaktinformasjon",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Har du spørsmål eller trenger hjelp? Kontakt oss på:"
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "E-post: info@bikelink.no",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Ved å bruke BikeLink.no godtar du disse vilkårene. Vi forbeholder oss retten til å oppdatere vilkårene ved behov."
+    }
+   ]
+  }
+ ]
+}

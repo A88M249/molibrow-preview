@@ -1,0 +1,497 @@
+{
+ "slug": "frakt",
+ "title": "Fraktpolicy",
+ "source": "https://bikelink.no/policies/shipping-policy",
+ "blocks": [
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "1. Behandling og utsendelse – Rask og trygg levering av sykler",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "• Bestillinger av "
+    },
+    {
+     "t": "sykler på lager",
+     "b": true
+    },
+    {
+     "t": " behandles og sendes innen "
+    },
+    {
+     "t": "5–7 virkedager",
+     "b": true
+    },
+    {
+     "t": " for å sikre rask levering."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Dersom varen ikke er på lager, er estimert leveringstid "
+    },
+    {
+     "t": "ca. 10 virkedager",
+     "b": true
+    },
+    {
+     "t": ", ofte grunnet bestilling direkte fra produsent."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Hvis leveringstiden overstiger estimert tidsramme, har du som kunde rett til å "
+    },
+    {
+     "t": "kansellere bestillingen",
+     "b": true
+    },
+    {
+     "t": " og motta "
+    },
+    {
+     "t": "full refusjon",
+     "b": true
+    },
+    {
+     "t": "."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Dette sikrer en trygg, forutsigbar og profesjonell leveringsopplevelse."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "2. Leveringspartnere – Pålitelige fraktløsninger for premium sykler",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi samarbeider kun med anerkjente transportpartnere for å sikre maksimal trygghet og kvalitet i frakten av sykler:"
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "• "
+    },
+    {
+     "t": "Posten Norge",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• "
+    },
+    {
+     "t": "PostNord",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• "
+    },
+    {
+     "t": "FedEx",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• "
+    },
+    {
+     "t": "DHL",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Disse aktørene håndterer våre sykler med høy presisjon, noe som gir trygg transport og effektiv levering over hele Norge."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "3. Leveringsområder og tidsrammer – Rask sykkellevering i hele Norge",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "• Leveringstid innen "
+    },
+    {
+     "t": "Norge",
+     "b": true
+    },
+    {
+     "t": ": 2–5 virkedager etter utsendelse."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Dersom BikeLink må bestille sykkelen direkte fra fabrikk, er leveringstiden vanligvis "
+    },
+    {
+     "t": "10 dager",
+     "b": true
+    },
+    {
+     "t": "."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Levering kan påvirkes av forhold utenfor vår kontroll, som vær, toll eller logistikkutfordringer."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "BikeLink fokuserer på å gi en av Norges mest pålitelige og raske leveringsopplevelser for sykler og sykkelutstyr."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "4. Fraktkostnader – Oversiktlige og rettferdige priser",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "• Fraktkostnader beregnes automatisk i kassen basert på adresse og ønsket fraktmetode."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Enkelte produkter og kampanjer tilbyr "
+    },
+    {
+     "t": "gratis frakt",
+     "b": true
+    },
+    {
+     "t": " for å gi ekstra verdi til kundene."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Alle priser vises i NOK og inkluderer MVA."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Dette sikrer en transparent og kundevennlig kjøpsopplevelse."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "5. Sporing og oppdateringer – Full kontroll på sykkelforsendelsen",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "• Når bestillingen din sendes, mottar du en "
+    },
+    {
+     "t": "sporingskode på e-post",
+     "b": true
+    },
+    {
+     "t": "."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Du kan følge leveransen i sanntid og vite nøyaktig når sykkelen din ankommer."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Dette gir trygghet og full oversikt gjennom hele fraktprosessen."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "6. Ansvar og leveringsbetingelser – Trygg sykkelhandel på nett",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "• BikeLink har fullt ansvar for leveransen til du fysisk mottar din sykkel."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Dersom pakken blir "
+    },
+    {
+     "t": "skadet",
+     "b": true
+    },
+    {
+     "t": " eller "
+    },
+    {
+     "t": "forsvinner",
+     "b": true
+    },
+    {
+     "t": " under transport, tilbyr vi "
+    },
+    {
+     "t": "ny vare eller full refusjon",
+     "b": true
+    },
+    {
+     "t": "."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Dersom du ikke er tilgjengelig ved levering, kan transportør legge igjen hentelapp eller avtale ny levering."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi sikrer en trygg og profesjonell kjøpsopplevelse fra start til slutt."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "7. Angrerett (14 dager) – Trygg netthandel etter norsk lov",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "• Som kunde har du "
+    },
+    {
+     "t": "14 dagers angrerett",
+     "b": true
+    },
+    {
+     "t": ", i tråd med norsk forbrukerlovgivning."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Sykkelen må returneres "
+    },
+    {
+     "t": "ubrukt",
+     "b": true
+    },
+    {
+     "t": ", i "
+    },
+    {
+     "t": "original emballasje",
+     "b": true
+    },
+    {
+     "t": ", og godt beskyttet for transport."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Returkostnader bæres av kunden, med mindre produktet er defekt."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "8. Garanti og reklamasjon – Langsiktig trygghet",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "• Du kan reklamere på feil i inntil "
+    },
+    {
+     "t": "2 år",
+     "b": true
+    },
+    {
+     "t": " (eller "
+    },
+    {
+     "t": "5 år",
+     "b": true
+    },
+    {
+     "t": " hvis sykkelen forventes å vare vesentlig lenger)."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Hvis pakken ankommer skadet, kontakt oss umiddelbart med bilder."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "• Opplever du uvanlig lang leveringstid, kontakt oss for oppfølging."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Kontakt BikeLink kundeservice",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Har du spørsmål knyttet til frakt, levering eller status på bestillingen din?"
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Vi bistår gjerne."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "E-post:",
+     "b": true
+    },
+    {
+     "t": " info@bikelink.no"
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Adresse:",
+     "b": true
+    },
+    {
+     "t": " Prost Krags veg 29, 2080 Eidsvoll"
+    }
+   ]
+  }
+ ]
+}

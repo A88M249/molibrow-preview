@@ -34,7 +34,7 @@ export default function Dealers() {
     <>
       <JsonLd data={dealerLd} />
       <JsonLd data={breadcrumbLd([{ name: "Forside", path: "/" }, { name: "Finn forhandler", path: "/forhandlere" }])} />
-      <PageHero photo={LIFE.mountains} position="50% 40%" eyebrow="Forhandlere og serviceverksteder" title="Finn din nærmeste MMR-forhandler" lead="BikeLink samarbeider med nøye utvalgte forhandlere og verksteder over hele Norge – for utlevering, service og prøving av MMR-sykler." />
+      <PageHero photo={LIFE.showroom} position="50% 45%" eyebrow="Forhandlere og serviceverksteder" title="Finn din nærmeste MMR-forhandler" lead="BikeLink samarbeider med nøye utvalgte forhandlere og verksteder over hele Norge – for utlevering, service og prøving av MMR-sykler." />
       <section className="wrap section">
         <div className="chips" aria-label="Byer">{CITIES.map((c) => <a key={c} href={`#${c.toLowerCase()}`}>{c}</a>)}</div>
         {CITIES.map((city) => (

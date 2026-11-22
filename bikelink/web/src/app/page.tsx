@@ -5,7 +5,7 @@ import { LifeImage } from "@/components/LifeImage";
 import { ProductCard } from "@/components/ProductCard";
 import { Slider } from "@/components/Slider";
 import { CITIES } from "@/lib/dealers";
-import { LIFE } from "@/lib/life";
+import { CATEGORY_PHOTO, LIFE } from "@/lib/life";
 import { CATEGORIES, CATEGORY_IDS, inCategory, isAvailable, kr, listed, priceRange } from "@/lib/products";
 
 const firstAvailable = (c: (typeof CATEGORY_IDS)[number]) => inCategory(c).find((p) => isAvailable(p) && !p.needsReview) ?? inCategory(c)[0];
@@ -37,13 +37,15 @@ export default function Home() {
         <div className="section-head"><h2>Velg sykkeltype</h2><span className="mono muted">{listed.length} modeller</span></div>
         <div className="tiles">
           {CATEGORY_IDS.map((c) => {
+            const photo = CATEGORY_PHOTO[c];
             const p = firstAvailable(c);
             const img = p.images[0];
             return (
-              <Link key={c} href={`/${c}`} className="tile">
-                <span className="mono">+ {CATEGORIES[c].name}</span>
-                <Image src={img.src} alt="" width={img.width} height={img.height} sizes="(max-width:700px) 50vw, 20vw" />
-                <small className="mono muted">{inCategory(c).length} modeller</small>
+              <Link key={c} href={`/${c}`} className={`tile ${photo ? "photo" : ""}`}>
+                {photo ? <LifeImage photo={photo.hero} position="50% 50%" sizes="(max-width:700px) 50vw, 20vw" /> : <Image src={img.src} alt="" width={img.width} height={img.height} sizes="(max-width:700px) 50vw, 20vw" />}
+                {photo && <span className="hero-shade" />}
+                <span className="mono tile-label">+ {CATEGORIES[c].name}</span>
+                <small className="mono tile-count">{inCategory(c).length} modeller</small>
               </Link>
             );
           })}
@@ -81,8 +83,8 @@ export default function Home() {
       </section>
 
       <section className="wrap section photo-pair">
-        <PhotoCard photo={LIFE.aelionDetail} href="/service" label="Trygghet" title="Service og garanti" position="50% 50%" />
-        <PhotoCard photo={LIFE.face} href="/forhandlere" label="Forhandlere" title="Se og prøv hos en MMR-partner" position="50% 40%" />
+        <PhotoCard photo={LIFE.carbonRepair} href="/service" label="Trygghet" title="Service og garanti" position="50% 45%" />
+        <PhotoCard photo={LIFE.showroom} href="/forhandlere" label="Forhandlere" title="Se og prøv hos en MMR-partner" position="50% 50%" />
       </section>
 
       <section className="wrap section prose">

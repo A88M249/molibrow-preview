@@ -1,0 +1,756 @@
+{
+ "slug": "personvern",
+ "title": "Personvernerklæring",
+ "source": "https://bikelink.no/policies/privacy-policy",
+ "blocks": [
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Sist oppdatert: 7. juli 2025",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "BikeLink.no driver denne nettbutikken og nettstedet, inkludert all tilhørende informasjon, innhold, funksjoner, verktøy, produkter og tjenester, for å gi deg – kunden – en kuratert og trygg handleopplevelse (“Tjenestene”). BikeLink.no er drevet av Shopify, som gjør det mulig for oss å levere Tjenestene. Denne personvernerklæringen beskriver hvordan vi samler inn, bruker og deler dine personopplysninger når du besøker, bruker eller gjennomfører kjøp eller andre transaksjoner via Tjenestene, eller når du kommuniserer med oss. Dersom det skulle være motstrid mellom våre vilkår og denne personvernerklæringen, gjelder denne erklæringen for innsamling, behandling og deling av personopplysninger."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Ved å bruke Tjenestene bekrefter du at du har lest og forstått denne personvernerklæringen."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Personopplysninger vi samler inn eller behandler",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Med begrepet “personopplysninger” mener vi informasjon som identifiserer eller med rimelighet kan knyttes til deg. Dette inkluderer ikke anonymiserte eller avidentifiserte data. Vi kan samle inn eller behandle følgende kategorier av personopplysninger, avhengig av hvordan du bruker Tjenestene, hvor du bor, og som tillatt i henhold til gjeldende lovverk:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "Kontaktinformasjon",
+      "b": true
+     },
+     {
+      "t": " som navn, adresse, fakturaadresse, leveringsadresse, telefonnummer og e-postadresse."
+     }
+    ],
+    [
+     {
+      "t": "Betalingsinformasjon",
+      "b": true
+     },
+     {
+      "t": " som kreditt-/debetkortnummer, kontoopplysninger, betalingsmetode, transaksjonsdetaljer og betalingsbekreftelser."
+     }
+    ],
+    [
+     {
+      "t": "Kontoopplysninger",
+      "b": true
+     },
+     {
+      "t": " som brukernavn, passord, sikkerhetsspørsmål, preferanser og innstillinger."
+     }
+    ],
+    [
+     {
+      "t": "Transaksjonsdata",
+      "b": true
+     },
+     {
+      "t": " inkludert varer du ser på, legger i handlekurven, ønsker deg, kjøper, returnerer eller bytter, samt tidligere kjøp."
+     }
+    ],
+    [
+     {
+      "t": "Kommunikasjon",
+      "b": true
+     },
+     {
+      "t": " du sender til oss, for eksempel via kundeservicehenvendelser."
+     }
+    ],
+    [
+     {
+      "t": "Enhetsinformasjon",
+      "b": true
+     },
+     {
+      "t": " som nettleser, IP-adresse, enhets- eller nettverksidentifikatorer."
+     }
+    ],
+    [
+     {
+      "t": "Bruksdata",
+      "b": true
+     },
+     {
+      "t": " som hvordan du navigerer og interagerer med Tjenestene."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Kilder til personopplysninger",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi kan samle inn opplysninger fra:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "Direkte fra deg",
+      "b": true
+     },
+     {
+      "t": ", når du oppretter konto, handler, kommuniserer eller sender inn informasjon."
+     }
+    ],
+    [
+     {
+      "t": "Automatisk",
+      "b": true
+     },
+     {
+      "t": ", via informasjonskapsler, enheten din eller når du bruker nettstedet."
+     }
+    ],
+    [
+     {
+      "t": "Tjenesteleverandører",
+      "b": true
+     },
+     {
+      "t": ", som behandler data på våre vegne (betaling, frakt, analyse m.m.)."
+     }
+    ],
+    [
+     {
+      "t": "Partnere og tredjeparter",
+      "b": true
+     },
+     {
+      "t": " i samsvar med gjeldende lov."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Hvordan vi bruker dine personopplysninger",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Avhengig av hvordan du bruker Tjenestene, kan vi bruke dataene til følgende formål:"
+    }
+   ]
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "1. Levering og forbedring av Tjenestene",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi bruker personopplysninger for å:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "behandle betalinger og fullføre bestillinger"
+     }
+    ],
+    [
+     {
+      "t": "administrere og vedlikeholde kundekontoer"
+     }
+    ],
+    [
+     {
+      "t": "huske preferanser og anbefale relevante produkter"
+     }
+    ],
+    [
+     {
+      "t": "håndtere frakt, retur og bytter"
+     }
+    ],
+    [
+     {
+      "t": "sende kontorelatert informasjon og ordreoppdateringer"
+     }
+    ],
+    [
+     {
+      "t": "forbedre brukeropplevelsen og optimalisere nettstedet"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "2. Markedsføring og annonsering",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi kan sende deg:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "nyhetsbrev, kampanjer og tilbud på e-post eller SMS"
+     }
+    ],
+    [
+     {
+      "t": "målrettede annonser basert på tidligere aktivitet"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Du kan når som helst melde deg av markedsføring."
+    }
+   ]
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "3. Sikkerhet og svindelforebygging",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi bruker informasjonen til å:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "beskytte kontoen din"
+     }
+    ],
+    [
+     {
+      "t": "oppdage og forhindre svindel eller uautorisert aktivitet"
+     }
+    ],
+    [
+     {
+      "t": "sikre trygge betalinger og systemer"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "4. Kundekommunikasjon",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi bruker data for å gi support, besvare henvendelser og opprettholde kundeforholdet."
+    }
+   ]
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "5. Juridiske formål",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi bruker personopplysninger når nødvendig for å etterleve lovpålagte krav eller håndtere juridiske prosesser."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Hvordan vi deler personopplysninger",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi kan dele personopplysninger i følgende tilfeller:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "Med Shopify",
+      "b": true
+     },
+     {
+      "t": ", som drifter plattformen og tilbyr nødvendige teknologitjenester."
+     }
+    ],
+    [
+     {
+      "t": "Med tjenesteleverandører",
+      "b": true
+     },
+     {
+      "t": ", som betalingsløsninger, analyseverktøy, kundestøtte, frakt og lager."
+     }
+    ],
+    [
+     {
+      "t": "Med markedsføringspartnere",
+      "b": true
+     },
+     {
+      "t": ", som tilbyr målrettet annonsering (i henhold til gjeldende lov)."
+     }
+    ],
+    [
+     {
+      "t": "Med tredjeparter når du samtykker",
+      "b": true
+     },
+     {
+      "t": ", som ved bruk av sosiale medier-innlogginger eller fraktinstruksjoner."
+     }
+    ],
+    [
+     {
+      "t": "Med konsernforbundne selskaper",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "I forbindelse med fusjon, oppkjøp eller virksomhetsoverdragelse",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "For å overholde lov",
+      "b": true
+     },
+     {
+      "t": ", inkludert forespørsler fra offentlige myndigheter."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Forholdet mellom BikeLink.no og Shopify",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Shopify kan behandle dine personopplysninger som en egen behandlingsansvarlig i visse tilfeller, særlig når deres utvidede tjenester brukes."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Du kan lese mer om dette på:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "Shopify Consumer Privacy Policy"
+     }
+    ],
+    [
+     {
+      "t": "Shopify Privacy Portal (for innsyns- og rettighetsforespørsler)"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Tredjepartslenker",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Nettstedet kan inneholde lenker til eksterne sider. BikeLink.no er ikke ansvarlig for innhold, sikkerhet eller personvernpraksis på disse sidene. Vi anbefaler at du leser deres personvernerklæringer."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Barns personvern",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Tjenestene er ikke ment for barn. Vi samler ikke bevisst inn informasjon fra mindreårige. Hvis ditt barn har delt sine opplysninger med oss, kan du kontakte oss for å få dem slettet."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Sikkerhet og lagring av data",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Ingen systemer kan garantere fullstendig sikkerhet. Informasjon sendt over internett kan være utsatt under transport."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Vi lagrer personopplysninger så lenge det er nødvendig for:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "å tilby Tjenestene"
+     }
+    ],
+    [
+     {
+      "t": "overholde lovkrav"
+     }
+    ],
+    [
+     {
+      "t": "løse tvister"
+     }
+    ],
+    [
+     {
+      "t": "håndheve avtaler"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Dine rettigheter",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Avhengig av hvor du bor, kan du ha rett til:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "innsyn i egne personopplysninger"
+     }
+    ],
+    [
+     {
+      "t": "å få data slettet"
+     }
+    ],
+    [
+     {
+      "t": "å få informasjon korrigert"
+     }
+    ],
+    [
+     {
+      "t": "dataportabilitet (få kopi eller overføre data til tredjepart)"
+     }
+    ],
+    [
+     {
+      "t": "å reservere deg mot markedsføring"
+     }
+    ],
+    [
+     {
+      "t": "å protestere mot visse typer behandling"
+     }
+    ],
+    [
+     {
+      "t": "å trekke tilbake samtykke der det brukes som behandlingsgrunnlag"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Du kan utøve dine rettigheter ved å kontakte oss."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi kan be om identitetsbekreftelse før forespørsler behandles."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Internasjonale overføringer",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi kan overføre personopplysninger utenfor EØS eller Storbritannia."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Når vi gjør dette, bruker vi godkjente overføringsmekanismer som EUs standardkontrakter, med mindre mottakerlandet er forhåndsgodkjent av EU for å ha tilstrekkelig personvern."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Endringer i personvernerklæringen",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi kan oppdatere denne erklæringen ved behov. Endringer publiseres med oppdatert dato."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Kontakt",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Har du spørsmål eller ønsker å utøve dine rettigheter?"
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "E-post:",
+     "b": true
+    },
+    {
+     "t": " info@bikelink.no"
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Adresse:",
+     "b": true
+    },
+    {
+     "t": " Prost Krags veg 29, 2080 Eidsvoll, Norge"
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "BikeLink.no er behandlingsansvarlig for dine personopplysninger."
+    }
+   ]
+  }
+ ]
+}

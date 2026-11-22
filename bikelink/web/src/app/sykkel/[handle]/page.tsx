@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { BuyPanel } from "@/components/BuyPanel";
 import { Spin360 } from "@/components/Spin360";
 import { spinFrames } from "@/lib/spin";
+import { LifeImage } from "@/components/LifeImage";
+import { CATEGORY_MOOD } from "@/lib/life";
 import { JsonLd } from "@/components/JsonLd";
 import { ProductCard } from "@/components/ProductCard";
 import { CATEGORIES, byHandle, compareAt, describe, isAvailable, kr, listed, priceRange, products, siblings } from "@/lib/products";
@@ -92,6 +94,10 @@ export default async function ProductPage({ params }: Props) {
         <h2>Om {p.title.replace(/^MMR\s+/, "")}</h2>
         {paragraphs(text).map((t, i) => <p key={i}>{t.trim()}</p>)}
       </section>
+
+      {CATEGORY_MOOD[p.category] && (
+        <section className="mood" aria-hidden="true"><LifeImage photo={CATEGORY_MOOD[p.category]!} position="50% 50%" sizes="100vw" /></section>
+      )}
 
       {related.length > 0 && (
         <section id="flere">

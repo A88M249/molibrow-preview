@@ -35,6 +35,13 @@ const redirects = [
   { source: "/pages/dette-er-bikelink-no", destination: "/om-oss" },
   { source: "/pages/contact", destination: "/kontakt" },
   { source: "/cart", destination: "/handlekurv" },
+  { source: "/pages/b2b", destination: "/b2b" },
+  { source: "/pages/bike-exchange", destination: "/sykkelinnbytte" },
+  { source: "/policies/terms-of-service", destination: "/vilkar" },
+  { source: "/policies/refund-policy", destination: "/angrerett" },
+  { source: "/policies/shipping-policy", destination: "/frakt" },
+  { source: "/policies/privacy-policy", destination: "/personvern" },
+  { source: "/policies/legal-notice", destination: "/juridisk" },
 ];
 await writeFile(new URL("../data/redirects.json", import.meta.url), JSON.stringify(redirects, null, 1));
 console.log(`${redirects.length} redirects (${handles.length} collections)`);

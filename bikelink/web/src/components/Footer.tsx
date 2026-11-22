@@ -2,8 +2,6 @@ import Link from "next/link";
 import { CATEGORIES, CATEGORY_IDS } from "@/lib/products";
 import { Logo } from "./Header";
 
-const POL = "https://bikelink.no/policies"; // legal texts stay on the current shop until they are migrated
-
 export function Footer() {
   return (
     <footer className="footer">
@@ -21,17 +19,17 @@ export function Footer() {
           <strong>Kundeservice</strong>
           <Link href="/forhandlere">Finn forhandler</Link>
           <Link href="/service">Service og garanti</Link>
-          <a href="https://bikelink.no/pages/bike-exchange">Sykkelinnbytte</a>
+          <Link href="/sykkelinnbytte">Sykkelinnbytte</Link>
           <Link href="/kontakt">Kontakt oss</Link>
-          <a href="https://bikelink.no/pages/b2b">Bli forhandler (B2B)</a>
+          <Link href="/b2b">Bli forhandler (B2B)</Link>
         </div>
         <div>
           <strong>Retningslinjer</strong>
-          <a href={`${POL}/terms-of-service`}>Kjøpsvilkår</a>
-          <a href={`${POL}/refund-policy`}>Angrerett og retur</a>
-          <a href={`${POL}/shipping-policy`}>Frakt og levering</a>
-          <a href={`${POL}/privacy-policy`}>Personvern</a>
-          <a href={`${POL}/legal-notice`}>Juridisk merknad</a>
+          <Link href="/vilkar">Kjøpsvilkår</Link>
+          <Link href="/angrerett">Angrerett og retur</Link>
+          <Link href="/frakt">Frakt og levering</Link>
+          <Link href="/personvern">Personvern</Link>
+          <Link href="/juridisk">Juridisk merknad</Link>
         </div>
       </div>
       <div className="wrap footer-bottom">

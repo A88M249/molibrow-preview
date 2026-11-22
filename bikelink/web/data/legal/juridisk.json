@@ -1,0 +1,160 @@
+{
+ "slug": "juridisk",
+ "title": "Juridisk merknad",
+ "source": "https://bikelink.no/policies/legal-notice",
+ "blocks": [
+  {
+   "type": "ol",
+   "items": [
+    [
+     {
+      "t": "Ansvarsfraskrivelse – Innhold og eksterne lenker"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi jobber kontinuerlig for å sikre at informasjonen på bikelink.no er korrekt, oppdatert og relevant. Likevel kan det forekomme feil eller mangler, og BikeLink påtar seg ikke ansvar for dette. Nettstedet kan inneholde eksterne lenker til tredjeparter. BikeLink er ikke ansvarlig for innhold, sikkerhet eller personvernpraksis på eksterne sider."
+    }
+   ]
+  },
+  {
+   "type": "ol",
+   "items": [
+    [
+     {
+      "t": "Opphavsrett"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Alt innhold på bikelink.no – inkludert tekst, bilder, grafikk, design, produktbeskrivelser og logoer – er beskyttet av opphavsrett og tilhører BikeLink AS eller våre samarbeidspartnere. Uautorisert lagring, kopiering, distribusjon eller bruk av materiale er forbudt uten skriftlig tillatelse."
+    }
+   ]
+  },
+  {
+   "type": "ol",
+   "items": [
+    [
+     {
+      "t": "Lovmessig etterlevelse"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Denne juridiske merknaden er utformet i tråd med Ehandelsloven §8 og EUs personvernforordning (GDPR, artikkel 13). BikeLink følger gjeldende norske regelverk for netthandel, datasikkerhet og kundebeskyttelse."
+    }
+   ]
+  },
+  {
+   "type": "ol",
+   "items": [
+    [
+     {
+      "t": "Informasjonskapsler (Cookies) og personvern"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "For detaljer om hvilke cookies vi benytter, hvorfor vi bruker dem, og hvordan du kan gi eller trekke tilbake samtykke, se vår "
+    },
+    {
+     "t": "Cookie- og personvernpolicy",
+     "b": true
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Retningslinjene følger den nye ekomloven som trådte i kraft 1. januar 2025, som krever tydelig, spesifikt og informert samtykke for alle ikke-essensielle informasjonskapsler."
+    }
+   ]
+  },
+  {
+   "type": "ol",
+   "items": [
+    [
+     {
+      "t": "Forbrukerrettigheter"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "I henhold til norsk forbrukerlovgivning har private kunder 14 dagers angrerett fra mottakstidspunktet."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Fraktkostnader og leveringsvilkår finner du i vår "
+    },
+    {
+     "t": "Frakt- og betalingsinformasjon",
+     "b": true
+    },
+    {
+     "t": ". Standard leveringstid er opptil 30 dager fra ordrebekreftelse, med mindre annet er avtalt."
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "For full oversikt over rettigheter og plikter, se våre "
+    },
+    {
+     "t": "Vilkår og betingelser",
+     "b": true
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "ol",
+   "items": [
+    [
+     {
+      "t": "Markedsføring og kampanjer"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "All markedsføring fra BikeLink følger Markedsføringsloven og relevante forskrifter. Kommersiell kommunikasjon er alltid tydelig merket. Kampanjer, tilbud og rabattaktiviteter publiseres i tråd med gjeldende lovverk og bransjestandard."
+    }
+   ]
+  }
+ ]
+}

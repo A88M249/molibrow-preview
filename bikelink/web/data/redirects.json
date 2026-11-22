@@ -158,5 +158,33 @@
  {
   "source": "/cart",
   "destination": "/handlekurv"
+ },
+ {
+  "source": "/pages/b2b",
+  "destination": "/b2b"
+ },
+ {
+  "source": "/pages/bike-exchange",
+  "destination": "/sykkelinnbytte"
+ },
+ {
+  "source": "/policies/terms-of-service",
+  "destination": "/vilkar"
+ },
+ {
+  "source": "/policies/refund-policy",
+  "destination": "/angrerett"
+ },
+ {
+  "source": "/policies/shipping-policy",
+  "destination": "/frakt"
+ },
+ {
+  "source": "/policies/privacy-policy",
+  "destination": "/personvern"
+ },
+ {
+  "source": "/policies/legal-notice",
+  "destination": "/juridisk"
  }
 ]

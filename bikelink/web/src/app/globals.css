@@ -228,3 +228,13 @@ a.feature:hover{background:#fafaf9}
 .colours a:hover{border-color:var(--ink)}.colours a.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
 .search-box{display:flex;gap:12px;margin:8px 0 32px}.search-box input{flex:1;max-width:560px;padding:16px 20px;border:1px solid var(--ink);border-radius:999px;font:inherit;background:var(--card)}
 .header-end{display:flex;gap:22px;align-items:center}
+.tile.photo{position:relative;color:#fff;padding:0;aspect-ratio:3/4;display:block}
+.tile.photo .life-img{transition:transform .5s}.tile.photo:hover .life-img{transform:scale(1.05)}
+.tile.photo:hover{background:var(--soft)}
+.tile-label{position:absolute;left:16px;top:16px}.tile-count{position:absolute;left:16px;bottom:14px;color:#fff}
+.tile:not(.photo){aspect-ratio:3/4}.tile:not(.photo) .tile-label{position:static;color:var(--ink)}.tile:not(.photo) .tile-count{position:static;color:var(--muted)}
+.mood{position:relative;height:min(62vh,560px);margin:72px -40px 0;overflow:hidden}
+@media(max-width:700px){.mood{margin-left:-20px;margin-right:-20px;height:44vh}}
+.embed{width:100%;height:780px;border:1px solid var(--line);background:#fff}
+.legal .prose{max-width:80ch;margin-top:24px}.legal h2{font-size:1.5rem;margin-top:1.6em}.legal h3{font-size:1.15rem;margin-top:1.4em}.legal h2 strong,.legal h3 strong,.legal h4 strong{font-weight:inherit}
+.legal hr{border:0;border-top:1px solid var(--line);margin:28px 0}.legal ul,.legal ol{color:var(--ink2);padding-left:1.3em}.legal li{margin:.35em 0}.legal a{text-decoration:underline;text-underline-offset:3px}

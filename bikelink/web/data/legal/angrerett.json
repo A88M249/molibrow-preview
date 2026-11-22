@@ -1,0 +1,624 @@
+{
+ "slug": "angrerett",
+ "title": "Refusjonspolicy",
+ "source": "https://bikelink.no/policies/refund-policy",
+ "blocks": [
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Retur- og Refusjonspolicy – BikeLink.no",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Hos BikeLink.no ønsker vi at du skal føle deg helt trygg når du handler premium sykler og utstyr. Derfor har vi utviklet en klar og kundevennlig returpolicy som gjør det enkelt å forstå dine rettigheter og prosessen for retur, bytte og refusjon."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "30 dagers returrett",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Du har 30 dager fra du mottar varen til å be om retur."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "For at en retur skal godkjennes må produktet være:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "Ubrukt og uskadet"
+     }
+    ],
+    [
+     {
+      "t": "Med alle originale merkelapper"
+     }
+    ],
+    [
+     {
+      "t": "I original emballasje"
+     }
+    ],
+    [
+     {
+      "t": "Med kvittering eller kjøpsbevis"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Adresse for retur:",
+     "b": true
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Prost Krags vei 29, 2080 Eidsvoll, Norge",
+     "i": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "For å starte returen, kontakt oss på "
+    },
+    {
+     "t": "info@bikelink.no",
+     "b": true,
+     "href": "mailto:info@bikelink.no"
+    },
+    {
+     "t": "."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Varen må ikke sendes tilbake før returen er godkjent – uanmeldte returer vil ikke behandles."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Skader og mangler",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vi ber deg kontrollere produktet ved mottak."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Kontakt oss umiddelbart dersom varen:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "Er skadet"
+     }
+    ],
+    [
+     {
+      "t": "Har produksjonsfeil"
+     }
+    ],
+    [
+     {
+      "t": "Ikke samsvarer med bestillingen"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Dette gjør at vi raskt kan iverksette riktig tiltak og sikre en god kundeopplevelse."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Varer som ikke kan returneres",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Av hensyn til sikkerhet og produktstandard kan enkelte varer ikke returneres:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "Spesialtilpassede sykler"
+     }
+    ],
+    [
+     {
+      "t": "Personaliserte produkter"
+     }
+    ],
+    [
+     {
+      "t": "Produkter som er modifisert etter kundens ønske"
+     }
+    ],
+    [
+     {
+      "t": "Gavekort"
+     }
+    ],
+    [
+     {
+      "t": "Farlige materialer, brannfarlige væsker og gasser"
+     }
+    ],
+    [
+     {
+      "t": "Personlige pleieprodukter"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Tilpassede sykler kan ikke returneres",
+     "b": true
+    },
+    {
+     "t": ", med mindre produktet har en klar og dokumentert produksjonsfeil."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Bytte av varer",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Ønsker du en annen modell eller størrelse?"
+    }
+   ]
+  },
+  {
+   "type": "ol",
+   "items": [
+    [
+     {
+      "t": "Returner varen etter godkjenning"
+     }
+    ],
+    [
+     {
+      "t": "Legg inn en ny bestilling"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Dette er den raskeste måten å sikre at du får produktet du ønsker."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Angrerett – Norge og EU",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "Norsk angrerett",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Du kan kansellere kjøpet innen 14 dager etter mottak."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Dette gjelder for varer kjøpt:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "På nett"
+     }
+    ],
+    [
+     {
+      "t": "Over telefon"
+     }
+    ],
+    [
+     {
+      "t": "Utenfor fast utsalgssted"
+     }
+    ],
+    [
+     {
+      "t": "For beløp over 300 kr"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Hvis angrerettskjema ikke ble mottatt, kan fristen utvides med opptil 12 måneder."
+    }
+   ]
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "EU 14-dagers “Cooling Off Period”",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Gjelder for varer sendt til EU."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Du kan returnere varen uten å oppgi grunn, innen 14 dager."
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Varen må være ubrukt og i original stand."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Slik kansellerer du kjøpet",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Send en e-post til "
+    },
+    {
+     "t": "info@bikelink.no",
+     "b": true,
+     "href": "mailto:info@bikelink.no"
+    },
+    {
+     "t": " med:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "Ditt ordrenummer"
+     }
+    ],
+    [
+     {
+      "t": "En tydelig erklæring om kansellering"
+     }
+    ],
+    [
+     {
+      "t": "Eventuelt angrerettskjema (hvis mottatt)"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Retur av varen",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Når du har informert oss:"
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "Varen må sendes tilbake innen 14 dager"
+     }
+    ],
+    [
+     {
+      "t": "Varen må være trygt pakket, i original emballasje"
+     }
+    ],
+    [
+     {
+      "t": "Kunden dekker returkostnaden"
+     }
+    ],
+    [
+     {
+      "t": "Behold kvittering for forsendelsen"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Produkter som returneres skadet pga. dårlig emballering kan avvises."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Refusjon",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Når vi har mottatt og inspisert varen, mottar du en bekreftelse."
+    }
+   ]
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "Godkjent refusjon utbetales:",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "Via samme betalingsmetode"
+     }
+    ],
+    [
+     {
+      "t": "Innen 10 virkedager"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Vær oppmerksom på at bankens behandlingstid kan variere."
+    }
+   ]
+  },
+  {
+   "type": "h3",
+   "inline": [
+    {
+     "t": "Refusjonen inkluderer ikke:",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "ul",
+   "items": [
+    [
+     {
+      "t": "Fraktkostnader"
+     }
+    ],
+    [
+     {
+      "t": "Monteringskostnader"
+     }
+    ],
+    [
+     {
+      "t": "Tilpasninger/modifikasjoner"
+     }
+    ]
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Hvis det har gått mer enn 15 virkedager etter godkjent retur, ta kontakt på "
+    },
+    {
+     "t": "info@bikelink.no",
+     "b": true,
+     "href": "mailto:info@bikelink.no"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "hr"
+  },
+  {
+   "type": "h2",
+   "inline": [
+    {
+     "t": "Kontakt oss",
+     "b": true
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "Har du spørsmål om retur, angrerett eller produktkvalitet?"
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Vi står klare til å hjelpe!"
+    }
+   ]
+  },
+  {
+   "type": "p",
+   "inline": [
+    {
+     "t": "E-post:",
+     "b": true
+    },
+    {
+     "t": " "
+    },
+    {
+     "t": "info@bikelink.no",
+     "href": "mailto:info@bikelink.no"
+    },
+    {
+     "br": true
+    },
+    {
+     "t": "Adresse:",
+     "b": true
+    },
+    {
+     "t": " Prost Krags vei 29, 2080 Eidsvoll, Norge"
+    }
+   ]
+  }
+ ]
+}

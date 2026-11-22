@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/Blocks";
-import { LIFE } from "@/lib/life";
+import { CATEGORY_PHOTO } from "@/lib/life";
 import { JsonLd } from "@/components/JsonLd";
 import { ProductCard } from "@/components/ProductCard";
 import { CATEGORIES, CATEGORY_IDS, type CategoryId, familiesIn, inCategory, kr, priceRange } from "@/lib/products";
@@ -38,12 +38,12 @@ export default async function Category({ params }: Props) {
 
   return (
     <>
-      {category === "landevei" && <PageHero photo={LIFE.hilltop} position="60% 25%" eyebrow="MMR Bikes®" title={c.title} lead={c.intro} />}
+      {CATEGORY_PHOTO[category] && <PageHero photo={CATEGORY_PHOTO[category]!.hero} position={CATEGORY_PHOTO[category]!.position} eyebrow="MMR Bikes®" title={c.title} lead={c.intro} />}
     <div className="wrap section">
       <JsonLd data={collectionLd(category, items)} />
       <JsonLd data={breadcrumbLd([{ name: "Forside", path: "/" }, { name: c.name, path: categoryPath(category) }])} />
       <nav className="crumbs" aria-label="Brødsmulesti"><Link href="/">Forside</Link> / {c.name}</nav>
-      {category !== "landevei" && <><h1>{c.title}</h1><p className="lead">{c.intro}</p></>}
+      {!CATEGORY_PHOTO[category] && <><h1>{c.title}</h1><p className="lead">{c.intro}</p></>}
 
       {families.length > 1 && (
         <div className="chips" aria-label="Modellfamilier">
