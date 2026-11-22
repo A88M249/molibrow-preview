@@ -141,7 +141,7 @@ def footer(path, extra_js=''):
         area_col = ('<div><h4>Eidsvoll og omegn</h4>' + f'<a href="{h("areas")}">Bryn og vipper i Akershus</a>'
                     + ''.join(f'<a href="{h("area-" + k)}">{esc(AREAS[k]["name"])}</a>' for k in AREA_ORDER[:6]) + '</div>')
     return f'''<footer><div class="wrap">
-  <div class="fgrid">
+  <div class="fgrid{" f5" if area_col else ""}">
     <div><img src="{P}img/logo-milk.svg" alt="Molí Brow Studio" width="92" height="52" loading="lazy">
       <p>{'Bryn og vippeløft' if L == 0 else 'Brows and lash lift'}<br>Sundgata 7, 3. {'etasje' if L == 0 else 'floor'}<br>2080 Eidsvoll</p></div>
     <div><h4>{'Behandlinger' if L == 0 else 'Treatments'}</h4>{svc}</div>

@@ -115,7 +115,7 @@ details[open] summary::after{transform:rotate(45deg)}details p{margin:14px 0 0;f
 .book{text-align:center;background:radial-gradient(60% 120% at 50% 0,#fff,rgba(255,255,255,0) 70%),var(--milk)}
 .book h2{margin:0 auto 24px;max-width:12em}.book p{max-width:30em;margin:0 auto 36px}
 footer{background:var(--ink);color:var(--oat);padding:72px 0 40px;font-size:14px}
-.fgrid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:40px}
+.fgrid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:40px}.fgrid.f5{grid-template-columns:1.2fr 1fr 1fr 1fr 1fr}
 footer img{height:52px;margin-bottom:20px}footer h4{margin:0 0 14px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;color:var(--milk)}
 footer a{display:block;text-decoration:none;margin:6px 0}footer a:hover{color:var(--milk)}
 .legal{margin-top:56px;padding-top:24px;border-top:1px solid rgba(202,183,172,.2);font-size:12px;opacity:.7;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -131,9 +131,9 @@ footer a{display:block;text-decoration:none;margin:6px 0}footer a:hover{color:va
  .promise{grid-template-columns:1fr 1fr}
  .cols,.q{grid-template-columns:1fr}
  .sheet{grid-template-columns:repeat(2,1fr);gap:14px}.sheet figure,.sheet figure.w{grid-column:span 1}.sheet figure:nth-child(3n+2){margin-top:0}.sheet figure:nth-child(even){margin-top:32px}
- .fgrid{grid-template-columns:1fr 1fr}
+ .fgrid,.fgrid.f5{grid-template-columns:1fr 1fr}
 }
-@media (max-width:520px){.wrap{width:calc(100% - 32px)}.promise{grid-template-columns:1fr}.promise>div{border:0;border-bottom:1px solid var(--line);padding:24px 0}.fgrid{grid-template-columns:1fr}.proof{flex-wrap:wrap}}
+@media (max-width:520px){.wrap{width:calc(100% - 32px)}.promise{grid-template-columns:1fr}.promise>div{border:0;border-bottom:1px solid var(--line);padding:24px 0}.fgrid,.fgrid.f5{grid-template-columns:1fr}.proof{flex-wrap:wrap}}
 
 /* ═════ multi-page additions ═════ */
 a.skip{position:absolute;left:-999px;top:8px;background:var(--cocoa);color:var(--milk);padding:10px 16px;border-radius:99px;z-index:50}a.skip:focus{left:8px}
@@ -237,3 +237,4 @@ nav a.lang{font:500 11px/1 Montserrat;letter-spacing:.16em;border:1px solid var(
 .bk-ok{padding:40px 0}.bk-ok h2{margin-bottom:14px}
 .bk-actions{display:flex;gap:14px;align-items:center;margin-top:26px;flex-wrap:wrap}
 @media (max-width:620px){.bk-form{grid-template-columns:1fr}}
+button,input,textarea,select{font-family:inherit}
