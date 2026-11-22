@@ -81,6 +81,29 @@ While previewing, the site is indexable only on the final domain: set `NEXT_PUBL
 
 **Rollback:** remove the Worker custom domains, re-add the Shopify A/CNAME (DNS only). Cloudflare applies DNS changes in seconds.
 
+## 6b. Daily stock email from MMR
+Pick one way to receive the mail (both feed the same importer; start with `STOCK_AUTO_APPLY=false` so you approve each file in `/admin` → *Lagerimport*).
+
+On the API (Railway) set: `STOCK_ALLOWED_SENDERS` (MMR's sending address, e.g. `stock@mmr.example` or `@mmr.example` – ask MMR / look at a past email), and `DEPLOY_HOOK_URL`
+(Cloudflare: Workers & Pages → the Worker → Settings → Builds → Deploy hooks; add `NEXT_PUBLIC_API_URL` to the build variables so every build pulls current stock).
+
+**A. Cloudflare Email Worker** (needs Cloudflare DNS, step 1)
+1. Pick a *sub*domain for stock mail, e.g. `lager.bikelink.no`, so your normal mailbox/MX records are untouched. Cloudflare → Email → Email Routing → *Settings* → add the subdomain
+   (Cloudflare adds its MX records for that subdomain only).
+2. Email Routing → *Destination addresses*: add and verify `info@bikelink.no` (used as fallback for non-stock mail or while the API is down).
+3. `cd email-worker && npm install && npx wrangler secret put STOCK_INGEST_TOKEN && npx wrangler deploy` (adjust `API_URL` / `FALLBACK_ADDRESS` in `wrangler.jsonc` first).
+   Use the same long random `STOCK_INGEST_TOKEN` on the API.
+4. Email Routing → *Routing rules* → custom address `stock@lager.bikelink.no` → *Send to a Worker* → `bikelink-stock-mail`.
+5. Tell MMR to send the daily file to `stock@lager.bikelink.no` – or, if it must stay at the current address, add an automatic forward rule in that mailbox.
+
+**B. IMAP poller** (no DNS or MMR change; works with the mailbox that gets the mail today)
+1. Create a dedicated mailbox / app password at one.com and make sure MMR's mail lands in its INBOX (forward rule if needed).
+2. On Railway add a service from the same repo (root `bikelink/backend`, same variables) with start command `npm run build && npm run stock:poll` and a **cron schedule** of every 30 minutes.
+3. Variables: `IMAP_HOST` (one.com: `imap.one.com`), `IMAP_USER`, `IMAP_PASSWORD`, optional `IMAP_MAILBOX`, `IMAP_PROCESSED_MAILBOX`. Only mail from `STOCK_ALLOWED_SENDERS` is touched.
+
+Check the first real file: `/admin` → *Lagerimport* shows the detected columns and the before/after list. If the columns are not recognised, the error lists the headers it found.
+Neither the Email Worker routing nor the IMAP poller has been run against a real mail server yet – do the first test with a copy of a real MMR email.
+
 ## 7. Still on the old shop at launch
 These exist only on Shopify and will 404 on the new domain until rebuilt: `/pages/b2b`, `/pages/bike-exchange`,
 `/policies/terms-of-service`, `/policies/refund-policy`, `/policies/shipping-policy`, `/policies/privacy-policy`, `/policies/legal-notice`.

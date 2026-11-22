@@ -88,3 +88,27 @@ CREATE TABLE IF NOT EXISTS b2b_order_items (
   PRIMARY KEY (order_id, product_id)
 );
 CREATE INDEX IF NOT EXISTS b2b_orders_account_idx ON b2b_orders (account_id, created_at DESC);
+
+-- ───────────── Daily stock sync (CSV from MMR by email) ─────────────
+ALTER TABLE products ADD COLUMN IF NOT EXISTS stock_updated_at TIMESTAMPTZ;
+
+CREATE TABLE IF NOT EXISTS stock_imports (
+  id             SERIAL PRIMARY KEY,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+  as_of          TIMESTAMPTZ NOT NULL,                 -- when the file was sent (orders after this are not in it yet)
+  source         TEXT NOT NULL CHECK (source IN ('email','upload')),
+  sender         TEXT,
+  filename       TEXT,
+  checksum       TEXT NOT NULL,
+  status         TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','applied','rejected','failed')),
+  message        TEXT,
+  rows_total     INTEGER NOT NULL DEFAULT 0,
+  matched        INTEGER NOT NULL DEFAULT 0,
+  unmatched      INTEGER NOT NULL DEFAULT 0,
+  changed        INTEGER NOT NULL DEFAULT 0,
+  unmatched_skus TEXT[] NOT NULL DEFAULT '{}',
+  parsed         JSONB NOT NULL DEFAULT '{}',          -- { sku: quantity } for the matched rows
+  applied_at     TIMESTAMPTZ,
+  applied_by     TEXT
+);
+CREATE INDEX IF NOT EXISTS stock_imports_created_idx ON stock_imports (created_at DESC);

@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bikelink-stock-mail",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    // Public URL of the backend API
+    "API_URL": "https://api.bikelink.no",
+    // Mail that is NOT a stock file (or when the API is down) is forwarded here so nothing gets lost.
+    // The address must be verified under Cloudflare → Email → Email Routing → Destination addresses.
+    "FALLBACK_ADDRESS": "info@bikelink.no"
+  }
+  // Secret (not stored here):  npx wrangler secret put STOCK_INGEST_TOKEN   (same value as on the API)
+}

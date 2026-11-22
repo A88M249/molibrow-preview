@@ -4,6 +4,8 @@ import { z } from "zod";
 import { OrderError, setB2bOrderStatus } from "../b2b.js";
 import { config } from "../config.js";
 import { sendMail } from "../mail.js";
+import { CsvError } from "../stock-csv.js";
+import { applyImport, diffFor, ingestStockFile, rejectImport, safetyProblem } from "../stock-import.js";
 import { createOneTimeLink, inviteUrl } from "./b2b.js";
 import { pool } from "../db.js";
 
@@ -135,4 +137,40 @@ export async function adminRoutes(app: FastifyInstance) {
       throw e;
     }
   });
+  // ── stock imports (daily CSV from MMR) ──
+  app.get("/admin/stock-imports", async () => {
+    const { rows } = await pool.query(
+      `SELECT id, created_at, as_of, source, sender, filename, status, message, rows_total, matched, unmatched, changed, applied_at, applied_by
+         FROM stock_imports ORDER BY created_at DESC LIMIT 60`);
+    return { autoApply: config.stock.autoApply, maxDropPct: config.stock.maxDropPct, missing: config.stock.missing, imports: rows };
+  });
+
+  app.get<{ Params: { id: string } }>("/admin/stock-imports/:id", async (req, reply) => {
+    const { rows: [imp] } = await pool.query("SELECT * FROM stock_imports WHERE id = $1", [Number(req.params.id) || 0]);
+    if (!imp) return reply.code(404).send({ error: "Not found" });
+    const { parsed, ...meta } = imp;
+    if (imp.status !== "pending") return { ...meta, changes: [], changesTotal: imp.changed, problem: null };
+    const d = await diffFor(parsed, imp.unmatched_skus, new Date(imp.as_of));
+    const active = (await pool.query("SELECT count(*)::int AS n FROM products WHERE active")).rows[0].n;
+    return { ...meta, changes: d.changes.slice(0, 500), changesTotal: d.changes.length, totalBefore: d.totalBefore, totalAfter: d.totalAfter, problem: safetyProblem(d, active) };
+  });
+
+  /** Manual upload (same pipeline as email, but it always waits for an explicit apply). */
+  app.post("/admin/stock-imports", { bodyLimit: 8 * 1024 * 1024 }, async (req, reply) => {
+    // csvBase64 = the file's raw bytes (keeps Windows-1252 exports intact); csv = plain text (handy for scripts)
+    const body = z.object({ filename: z.string().max(200).optional(), csv: z.string().min(1).optional(), csvBase64: z.string().min(1).optional() }).refine((b) => b.csv || b.csvBase64, "csv or csvBase64 required").safeParse(req.body);
+    if (!body.success) return reply.code(400).send({ error: body.error.flatten() });
+    const content = body.data.csvBase64 ? Buffer.from(body.data.csvBase64, "base64") : Buffer.from(body.data.csv!, "utf8");
+    const r = await ingestStockFile({ content, filename: body.data.filename ?? "opplastet.csv", source: "upload", autoApply: false });
+    return reply.code(r.status === "failed" ? 422 : 201).send(r);
+  });
+
+  app.post<{ Params: { id: string } }>("/admin/stock-imports/:id/apply", async (req, reply) => {
+    const body = z.object({ force: z.boolean().optional() }).safeParse(req.body ?? {});
+    try { return await applyImport(Number(req.params.id) || 0, "admin", { force: body.success ? body.data.force : false }); }
+    catch (e) { if (e instanceof CsvError) return reply.code(409).send({ error: e.message }); throw e; }
+  });
+
+  app.post<{ Params: { id: string } }>("/admin/stock-imports/:id/reject", async (req, reply) =>
+    (await rejectImport(Number(req.params.id) || 0, "admin")) ? { ok: true } : reply.code(409).send({ error: "Only pending imports can be rejected" }));
 }

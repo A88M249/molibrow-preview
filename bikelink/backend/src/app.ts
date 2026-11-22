@@ -5,6 +5,7 @@ import { config } from "./config.js";
 import { pool } from "./db.js";
 import { adminRoutes } from "./routes/admin.js";
 import { b2bRoutes } from "./routes/b2b.js";
+import { ingestRoutes } from "./routes/ingest.js";
 import { checkoutRoutes } from "./routes/checkout.js";
 import { productRoutes } from "./routes/products.js";
 import { webhookRoutes } from "./routes/webhooks.js";
@@ -20,6 +21,7 @@ export async function buildApp(opts: { logger?: boolean } = {}) {
     await scope.register(checkoutRoutes);
   });
   await app.register(b2bRoutes);
+  await app.register(ingestRoutes);
   await app.register(adminRoutes);
   await app.register(webhookRoutes); // own scope: raw-body parser stays local
   app.get("/health", async () => {

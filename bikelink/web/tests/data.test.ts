@@ -57,3 +57,12 @@ test("price list import: semicolon/tab separated, decimal comma or point, header
   assert.deepEqual(r.prices, [{ sku: "082699", priceOre: 1850000 }, { sku: "080755", priceOre: 2199050 }, { sku: "080756", priceOre: 199990 }]);
   assert.equal(r.skipped, 3);
 });
+
+test("sync-stock: availability follows the API, unknown SKUs are left alone", async () => {
+  const { applyStock } = await import("../scripts/sync-stock.mjs");
+  const products = [{ handle: "a", variants: [{ sku: "1", available: true }, { sku: "2", available: false }, { sku: "3", available: true }] }];
+  const r = applyStock(products, [{ sku: "1", stock: 0 }, { sku: "2", stock: 4 }]);
+  assert.deepEqual(r.products[0].variants.map((v: { available: boolean }) => v.available), [false, true, true]);
+  assert.equal(r.changed, 2); assert.equal(r.known, 2);
+  assert.equal(products[0].variants[0].available, true, "input is not mutated");
+});

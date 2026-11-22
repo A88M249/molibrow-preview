@@ -57,3 +57,11 @@ export function parsePriceList(text: string): { prices: { sku: string; priceOre:
   }
   return { prices, skipped };
 }
+
+export const fileToBase64 = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result).split(",")[1] ?? "");
+    r.onerror = () => reject(new Error("Kunne ikke lese filen."));
+    r.readAsDataURL(file);
+  });

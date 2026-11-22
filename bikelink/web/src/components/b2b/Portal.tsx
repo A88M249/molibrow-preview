@@ -14,6 +14,7 @@ export function Portal() {
   const [token, setTok] = useState<string | null | undefined>(undefined);
   const [me, setMe] = useState<Me | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
+  const [stockAt, setStockAt] = useState<string | null>(null);
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [tab, setTab] = useState<"katalog" | "ordre" | "konto">("katalog");
   const [error, setError] = useState("");
@@ -21,7 +22,7 @@ export function Portal() {
   const logout = useCallback(() => { setToken(DEALER_KEY, null); router.push("/b2b/logg-inn"); }, [router]);
   const guard = useCallback((e: unknown) => { if (e instanceof ApiError && e.status === 401) logout(); else setError((e as Error).message); }, [logout]);
 
-  const loadCatalog = useCallback(async (t: string) => { try { setRows((await api<{ items: Row[] }>("/b2b/catalog", { token: t })).items); } catch (e) { guard(e); } }, [guard]);
+  const loadCatalog = useCallback(async (t: string) => { try { const c = await api<{ items: Row[]; stockUpdatedAt: string | null }>("/b2b/catalog", { token: t }); setRows(c.items); setStockAt(c.stockUpdatedAt); } catch (e) { guard(e); } }, [guard]);
   const loadOrders = useCallback(async (t: string) => { try { setOrders(await api<OrderRow[]>("/b2b/orders", { token: t })); } catch (e) { guard(e); } }, [guard]);
 
   useEffect(() => { setTok(getToken(DEALER_KEY)); }, []);
@@ -42,7 +43,7 @@ export function Portal() {
         </nav>
       </div>
       {error && <p className="error" role="alert">{error}</p>}
-      {tab === "katalog" && <Catalog token={token} me={me} rows={rows} onOrdered={() => { loadCatalog(token); loadOrders(token); setTab("ordre"); }} guard={guard} />}
+      {tab === "katalog" && <Catalog token={token} me={me} rows={rows} stockAt={stockAt} onOrdered={() => { loadCatalog(token); loadOrders(token); setTab("ordre"); }} guard={guard} />}
       {tab === "ordre" && <Orders token={token} orders={orders} guard={guard} />}
       {tab === "konto" && (
         <div className="feature account">
@@ -57,7 +58,7 @@ export function Portal() {
   );
 }
 
-function Catalog({ token, me, rows, onOrdered, guard }: { token: string; me: Me; rows: Row[]; onOrdered: () => void; guard: (e: unknown) => void }) {
+function Catalog({ token, me, rows, stockAt, onOrdered, guard }: { token: string; me: Me; rows: Row[]; stockAt: string | null; onOrdered: () => void; guard: (e: unknown) => void }) {
   const [q, setQ] = useState("");
   const [onlyStock, setOnlyStock] = useState(false);
   const [qty, setQty] = useState<Record<string, number>>({});
@@ -92,7 +93,7 @@ function Catalog({ token, me, rows, onOrdered, guard }: { token: string; me: Me;
         <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Søk modell, størrelse eller SKU" aria-label="Søk" />
         <label className="opt"><input type="checkbox" checked={onlyStock} onChange={(e) => setOnlyStock(e.target.checked)} /> Kun på lager</label>
       </div>
-      <p className="mono muted small">Priser er eks. mva. Lagerstatus oppdateres i sanntid. {shown.length} varianter</p>
+      <p className="mono muted small">Priser er eks. mva. {stockAt ? `Lager sist oppdatert ${dateTime(stockAt)}.` : "Lagerstatus oppdateres daglig."} {shown.length} varianter</p>
       <div className="table-wrap">
         <table className="table">
           <thead><tr><th>Modell</th><th>Str.</th><th className="num">Veil. inkl. mva</th><th className="num">Din pris eks. mva</th><th className="num">Lager</th><th className="num">Antall</th></tr></thead>

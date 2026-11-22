@@ -12,7 +12,9 @@
     "cf:build": "opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "import:pages": "node scripts/import-pages.mjs"
+    "import:pages": "node scripts/import-pages.mjs",
+    "sync:stock": "node scripts/sync-stock.mjs",
+    "prebuild": "node scripts/sync-stock.mjs"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",

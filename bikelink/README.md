@@ -95,6 +95,23 @@ login/apply/forgot are rate limited; forgot-password never reveals whether an em
 for staff with individual logins, add accounts before the team grows.
 Env: `JWT_SECRET` (required for B2B), `B2B_NOTIFY_EMAIL` (default info@bikelink.no).
 
+## Daily stock file from MMR (CSV by email)
+MMR's daily email → CSV attachment → **import** → stock in the database → shown live on the site and in the dealer portal.
+
+1. **Receive** – either (A) a Cloudflare Email Worker (`email-worker/`) on a dedicated address, or (B) an IMAP poller (`npm run stock:poll`) that reads a mailbox
+   (works with your one.com mailbox, no DNS change). Both only accept senders in `STOCK_ALLOWED_SENDERS`.
+2. **Read** – encoding (UTF-8 / Windows-1252), delimiter (`;` `,` tab `|`) and the SKU/quantity columns are detected automatically
+   (English, Spanish and Norwegian header names; override with `STOCK_SKU_COLUMN` / `STOCK_QTY_COLUMN`). SKUs match even if Excel dropped a leading zero.
+3. **Check** – a file is *held for review* if it would cut total stock by more than `STOCK_MAX_DROP_PCT` (60 %), matches no product, or (with `STOCK_MISSING=zero`) covers
+   less than half of the products. Unreadable files are stored as "failed" and staff get an email.
+4. **Approve** – `/admin` → *Lagerimport*: see exactly what changes (before → after), then *Bruk filen* / *Avvis*. With `STOCK_AUTO_APPLY=true` files that pass the checks apply by themselves
+   (start with `false` for a week or two).
+5. **Orders in between** – units sold since the file was sent (paid web orders, open dealer orders) are subtracted, because the file cannot know about them.
+6. **Show** – product pages check the live stock in the browser (a sold-out size cannot be added to the cart; "Kun N igjen" at 3 or fewer); the public API only says "10+";
+   the dealer portal shows "Lager sist oppdatert …"; every applied import triggers a rebuild (`DEPLOY_HOOK_URL`) and `npm run build` pulls current availability (`scripts/sync-stock.mjs`).
+
+Open questions to confirm with the first real file: which SKU column MMR uses, whether the quantity is BikeLink's own warehouse or MMR's central stock, and whether the file lists every SKU.
+
 ## Not migrated (needs a decision)
 - **Multiple users per dealer / credit limits / payment terms / returns**: one login per dealer account for now.
 - **People photos**: dealer/staff portraits on the old site were not copied (photos of identifiable people – get permission first).

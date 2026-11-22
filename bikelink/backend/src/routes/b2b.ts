@@ -122,7 +122,8 @@ export async function b2bRoutes(app: FastifyInstance) {
   app.get("/b2b/catalog", async (req, reply) => {
     const d = await requireDealer(req, reply);
     if (!d) return;
-    return { vatRate: VAT_RATE, items: await catalogFor(d.discountPct) };
+    const { rows: [f] } = await pool.query("SELECT max(stock_updated_at) AS at FROM products");
+    return { vatRate: VAT_RATE, stockUpdatedAt: f?.at ?? null, items: await catalogFor(d.discountPct) };
   });
 
   app.post("/b2b/orders", limit(30), async (req, reply) => {
