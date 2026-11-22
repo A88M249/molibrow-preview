@@ -69,7 +69,7 @@ export function Header() {
           </nav>
           </div>
           <Logo className="logo-center" />
-          <div className="header-end"><Link href="/sok" className="cart-link">Søk</Link><CartLink /></div>
+          <div className="header-end"><Link href="/sok" className="hdr-link">Søk</Link><CartLink /></div>
         </div>
       </header>
     </>

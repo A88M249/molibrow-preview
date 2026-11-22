@@ -10,7 +10,7 @@ import { webhookRoutes } from "./routes/webhooks.js";
 
 export async function buildApp(opts: { logger?: boolean } = {}) {
   const app = Fastify({ logger: opts.logger ?? true });
-  await app.register(cors, { origin: config.siteUrl });
+  await app.register(cors, { origin: config.corsOrigins });
   await app.register(rateLimit, { global: false });
   await app.register(productRoutes);
   // Checkout creates orders and calls payment providers: limit it per IP.

@@ -46,7 +46,7 @@ p{margin:0 0 1em}
 .nav-link:hover{text-decoration:underline;text-underline-offset:6px}
 .logo{display:block}.logo img{width:176px;height:auto}.logo-light{display:none}
 .header-end{justify-self:end;font:400 .74rem var(--mono);letter-spacing:.05em;text-transform:uppercase}
-.cart-link:hover{text-decoration:underline;text-underline-offset:6px}
+.cart-link:hover,.hdr-link:hover{text-decoration:underline;text-underline-offset:6px}
 .mobile-menu{display:none}
 body:has(.hero-full) .header{position:absolute;top:var(--ann);left:0;right:0;background:transparent;color:#fff;border-bottom-color:transparent}
 body:has(.hero-full) .logo-dark{display:none}body:has(.hero-full) .logo-light{display:block}

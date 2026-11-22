@@ -6,10 +6,7 @@ type Product = { handle: string; duplicateOf?: string };
 const read = <T,>(f: string): T => JSON.parse(readFileSync(path.join(process.cwd(), "data", f), "utf8"));
 
 const config: NextConfig = {
-  images: {
-    remotePatterns: [{ protocol: "https", hostname: "cdn.shopify.com" }],
-    formats: ["image/avif", "image/webp"],
-  },
+  images: { loader: "custom", loaderFile: "./src/lib/image-loader.ts" },
   // Old Shopify URLs keep working after the switch (and keep their search rankings).
   async redirects() {
     const dups = read<Product[]>("products.json").filter((p) => p.duplicateOf);
