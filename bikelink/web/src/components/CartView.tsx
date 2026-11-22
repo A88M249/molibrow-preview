@@ -55,7 +55,7 @@ export function CartView() {
               {l.image && <Image src={l.image} alt="" width={120} height={90} />}
               <div className="cart-info">
                 <Link href={`/sykkel/${l.handle}`}><strong>{l.title}</strong></Link>
-                <span className="muted small">{l.size ? `Størrelse ${l.size}` : ""}</span>
+                <span className="muted small">{[l.size ? `Størrelse ${l.size}` : "", l.colour ?? ""].filter(Boolean).join(" · ")}</span>
                 <span className="qty">
                   <button type="button" aria-label="Færre" onClick={() => setQty(l.sku, l.quantity - 1)}>−</button>
                   <output>{l.quantity}</output>

@@ -3,7 +3,7 @@
 import { readFileSync } from "node:fs";
 import pg from "pg";
 
-type P = { duplicateOf?: string; handle: string; title: string; description: string; images: { src: string }[]; variants: { sku: string; size: string | null; priceOre: number; available: boolean }[] };
+type P = { colours?: string[]; duplicateOf?: string; handle: string; title: string; description: string; images: { src: string }[]; variants: { sku: string; size: string | null; colour?: string | null; priceOre: number; available: boolean }[] };
 const products: P[] = JSON.parse(readFileSync(new URL("../../web/data/products.json", import.meta.url), "utf8"));
 
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
@@ -18,7 +18,7 @@ for (const p of products) {
       `INSERT INTO products (sku, slug, name, size, description, price_ore, stock, image_url)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
        ON CONFLICT (sku) DO UPDATE SET slug=$2, name=$3, size=$4, description=$5, price_ore=$6, image_url=$8`,
-      [v.sku, p.handle, p.title, v.size, p.description, v.priceOre, v.available ? 1 : 0, p.images[0]?.src ?? null],
+      [v.sku, p.handle, (p.colours?.length ?? 0) > 1 && v.colour ? `${p.title} – ${v.colour}` : p.title, v.size, p.description, v.priceOre, v.available ? 1 : 0, p.images[0]?.src ?? null],
     );
     seen.push(v.sku);
     rows++;

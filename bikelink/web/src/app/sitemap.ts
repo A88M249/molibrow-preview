@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { CATEGORY_IDS, products } from "@/lib/products";
 import { abs, categoryPath, productPath } from "@/lib/seo";
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const latest = new Date(Math.max(...products.map((p) => Date.parse(p.updatedAt))));
   return [

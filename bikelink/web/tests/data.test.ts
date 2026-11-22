@@ -82,3 +82,12 @@ test("VAT is the Norwegian standard rate, 25 %", () => {
   assert.equal(priceBreakdown(12500, 8000).retailExVatOre, 10000, "125 kr incl. VAT = 100 kr excl. VAT");
   assert.equal(priceBreakdown(12500, 8000).b2bIncVatOre, 10000, "80 kr excl. VAT = 100 kr incl. VAT");
 });
+
+test("every size exists once per colour, and multi-colour products tag their photos and variants", () => {
+  for (const p of products) {
+    const keys = p.variants.map((v) => `${v.colour ?? ""}|${v.size ?? ""}`);
+    assert.equal(new Set(keys).size, keys.length, `${p.handle} repeats a colour/size`);
+    if (p.colours.length > 1) assert.ok(p.variants.every((v) => v.colour && p.colours.includes(v.colour)), `${p.handle} has a variant without a colour`);
+  }
+  assert.ok(products.filter((p) => p.colours.length > 1).length >= 30, "most products are multi-colour");
+});

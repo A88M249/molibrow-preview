@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BuyPanel } from "@/components/BuyPanel";
+import { ColourScope, Gallery } from "@/components/ColourScope";
 import { DealerPriceBlock } from "@/components/DealerProvider";
 import { Spin360 } from "@/components/Spin360";
 import { spinFrames } from "@/lib/spin";
@@ -45,6 +46,7 @@ export default async function ProductPage({ params }: Props) {
   const was = compareAt(p);
   const text = describe(p);
   const colourways = [p, ...siblings(p)];
+  const initialColour = p.colours.find((c) => p.variants.some((v) => v.colour === c && v.available)) ?? p.colours[0] ?? null;
   const frames = spinFrames(p.handle);
   const related = listed.filter((x) => x.family === p.family && x.modelKey !== p.modelKey && x.category === p.category).slice(0, 4);
 
@@ -60,18 +62,14 @@ export default async function ProductPage({ params }: Props) {
         <span className="price">{kr(low)}</span>
       </div>
 
+      <ColourScope initial={initialColour}>
       <div className="pdp">
-        <div className="gallery">
-          {frames.length >= 8 && <div className="gallery-spin"><Spin360 frames={frames} alt={p.title} /></div>}
-          {p.images.map((img, i) => (
-            <Image key={img.src} src={img.src} alt={img.alt ?? `${p.title} – bilde ${i + 1}`} width={img.width} height={img.height} priority={i === 0 && frames.length < 8} sizes="(max-width:900px) 100vw, 55vw" className={i === 0 && frames.length < 8 ? "wide" : ""} />
-          ))}
-        </div>
+        <Gallery images={p.images} frames={frames} title={p.title} />
 
         <aside className="buybox">
           <p className="eyebrow">MMR Bikes · {cat.name}</p>
           <h1>{p.title}</h1>
-          {p.colour && <p className="muted">Farge: {p.colour}</p>}
+          {(p.colours.length > 1 ? p.colours.join(" / ") : p.colour) && <p className="muted">Farge: {p.colours.length > 1 ? p.colours.join(" / ") : p.colour}</p>}
           {colourways.length > 1 && (
             <ul className="colours" aria-label="Velg farge">
               {colourways.map((c) => (
@@ -82,7 +80,7 @@ export default async function ProductPage({ params }: Props) {
           <p className="price big">{kr(low)}{high !== low && <span className="muted"> – {kr(high)}</span>} {was && <s>{kr(was)}</s>}</p>
           <p className="muted small">Inkl. mva. Frakt er inkludert i prisen.</p>
           <DealerPriceBlock slug={p.handle} />
-          <BuyPanel handle={p.handle} title={p.title} image={p.images[0]?.src ?? null} variants={p.variants.map((v) => ({ sku: v.sku, size: v.size, priceOre: v.priceOre, available: v.available }))} />
+          <BuyPanel handle={p.handle} title={p.title} image={p.images[0]?.src ?? null} colours={p.colours} variants={p.variants.map((v) => ({ sku: v.sku, size: v.size, colour: v.colour, priceOre: v.priceOre, available: v.available }))} />
           <ul className="facts">
             <li><strong>Levering hjem</strong> eller hent ferdig montert hos forhandler</li>
             <li><strong>Betal</strong> med kort, Klarna eller Vipps</li>
@@ -91,6 +89,7 @@ export default async function ProductPage({ params }: Props) {
           <Link className="btn ghost block" href="/forhandlere">Finn forhandler</Link>
         </aside>
       </div>
+      </ColourScope>
 
       <section className="prose desc" id="beskrivelse">
         <h2>Om {p.title.replace(/^MMR\s+/, "")}</h2>

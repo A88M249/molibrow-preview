@@ -63,10 +63,17 @@ for (const p of products) {
     needsReview: INTERNAL.test(text(p.body_html ?? "")),
     updatedAt: p.updated_at,
     colour: p.variants[0] ? (variantOpt(p.variants[0], "farge") ?? variantOpt(p.variants[0], "color")) : null,
-    images: p.images.slice(0, 6).map((i) => ({ src: i.src, width: i.width, height: i.height, alt: i.alt })),
+    // Most products list several colourways as variants (size × colour): keep the colours, and which photo belongs to which colour
+    colours: [...new Set(p.variants.map((v) => variantOpt(v, "farge") ?? variantOpt(v, "color")).filter(Boolean))],
+    images: p.images.slice(0, 8).map((i) => {
+      const base = (u) => (u ?? "").split("?")[0];
+      const owner = p.variants.find((v) => v.featured_image && base(v.featured_image.src) === base(i.src));
+      return { src: i.src, width: i.width, height: i.height, alt: i.alt, colour: owner ? (variantOpt(owner, "farge") ?? variantOpt(owner, "color")) : null };
+    }),
     variants: p.variants.map((v) => ({
       sku: uniqueSku(p.handle, v.sku, variantOpt(v, "størrelse")),
       size: variantOpt(v, "størrelse"),
+      colour: variantOpt(v, "farge") ?? variantOpt(v, "color"),
       priceOre: Math.round(parseFloat(v.price) * 100),
       compareAtOre: v.compare_at_price ? Math.round(parseFloat(v.compare_at_price) * 100) : null,
       available: v.available,

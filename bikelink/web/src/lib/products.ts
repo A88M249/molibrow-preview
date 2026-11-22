@@ -1,6 +1,6 @@
 import raw from "../../data/products.json";
 
-export type Variant = { sku: string; size: string | null; priceOre: number; compareAtOre: number | null; available: boolean };
+export type Variant = { sku: string; size: string | null; colour: string | null; priceOre: number; compareAtOre: number | null; available: boolean };
 export type Product = {
   handle: string;
   title: string;
@@ -12,7 +12,9 @@ export type Product = {
   duplicateOf?: string;
   updatedAt: string;
   colour: string | null;
-  images: { src: string; width: number; height: number; alt: string | null }[];
+  /** Colourways listed as variants of this product (size × colour). */
+  colours: string[];
+  images: { src: string; width: number; height: number; alt: string | null; colour?: string | null }[];
   variants: Variant[];
 };
 
@@ -95,9 +97,11 @@ export const compareAt = (p: Product) => {
 export const kr = (ore: number) => `${new Intl.NumberFormat("nb-NO").format(Math.round(ore / 100)).replace(/ /g, " ")} kr`;
 
 /** Facts we can state without inventing anything. */
+export const colourLabel = (p: Product) => (p.colours.length > 1 ? p.colours.join(" / ") : p.colour);
+
 export const productSummary = (p: Product) => {
   const sizes = p.variants.filter((v) => v.available && v.size).map((v) => v.size);
   return `${p.title} er en ${CATEGORIES[p.category].noun} fra MMR, solgt av BikeLink, offisiell importør i Norge.` +
-    (p.colour ? ` Farge: ${p.colour}.` : "") +
+    (colourLabel(p) ? ` Farge: ${colourLabel(p)}.` : "") +
     (sizes.length ? ` På lager i størrelse ${sizes.join(", ")}.` : " Er for tiden utsolgt.");
 };

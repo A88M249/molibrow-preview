@@ -58,7 +58,7 @@ export function productLd(p: Product) {
     image: p.images.map((i) => i.src),
     sku: p.variants[0]?.sku,
     category: CATEGORIES[p.category].title,
-    color: p.colour ?? undefined,
+    color: p.colours.length ? p.colours.join(", ") : (p.colour ?? undefined),
     ...(siblings(p).length ? { isVariantOf: { "@type": "ProductGroup", productGroupID: p.modelKey, name: modelName(p), variesBy: "https://schema.org/color" } } : {}),
     brand: { "@type": "Brand", name: "MMR Bikes" },
     url: abs(productPath(p)),
