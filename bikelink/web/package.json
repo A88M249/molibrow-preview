@@ -6,7 +6,9 @@
     "build": "next build",
     "start": "next start",
     "import": "node scripts/import-shopify.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "redirects": "node scripts/gen-redirects.mjs",
+    "test": "node --import tsx --test tests/*.test.ts"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
@@ -19,6 +21,7 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "tsx": "^4.19.0"
   }
 }

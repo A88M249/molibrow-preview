@@ -4,7 +4,11 @@ function need(name: string): string {
   return v;
 }
 
+const opt = (name: string): string | undefined => process.env[name] || undefined;
+
 export const config = {
+  adminToken: opt("ADMIN_TOKEN"),
+  mail: { smtpUrl: opt("SMTP_URL"), from: opt("MAIL_FROM") ?? "BikeLink <info@bikelink.no>" },
   port: Number(process.env.PORT ?? 4000),
   siteUrl: need("SITE_URL"),
   databaseUrl: need("DATABASE_URL"),

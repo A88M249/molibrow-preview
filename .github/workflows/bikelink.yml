@@ -1,0 +1,37 @@
+name: Bikelink CI
+on:
+  push: { paths: ["bikelink/**", ".github/workflows/bikelink.yml"] }
+  pull_request: { paths: ["bikelink/**", ".github/workflows/bikelink.yml"] }
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: bikelink/web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: bikelink/web/package-lock.json }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  backend:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: bikelink/backend } }
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: postgres, POSTGRES_DB: bikelink_test }
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U postgres" --health-interval 5s --health-retries 10
+    env: { DATABASE_URL: "postgres://postgres:postgres@localhost:5432/bikelink_test" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: bikelink/backend/package-lock.json }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: psql "$DATABASE_URL" -f sql/schema.sql
+      - run: npm test
+      - run: npm run build

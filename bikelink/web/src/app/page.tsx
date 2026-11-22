@@ -6,13 +6,13 @@ import { ProductCard } from "@/components/ProductCard";
 import { Slider } from "@/components/Slider";
 import { CITIES } from "@/lib/dealers";
 import { LIFE } from "@/lib/life";
-import { CATEGORIES, CATEGORY_IDS, inCategory, isAvailable, kr, priceRange, products } from "@/lib/products";
+import { CATEGORIES, CATEGORY_IDS, inCategory, isAvailable, kr, listed, priceRange } from "@/lib/products";
 
 const firstAvailable = (c: (typeof CATEGORY_IDS)[number]) => inCategory(c).find((p) => isAvailable(p) && !p.needsReview) ?? inCategory(c)[0];
 
 export default function Home() {
   const feature = firstAvailable("landevei");
-  const picks = products.filter((p) => isAvailable(p) && !p.needsReview).slice(0, 12);
+  const picks = listed.filter((p) => isAvailable(p) && !p.needsReview).slice(0, 12);
 
   return (
     <>
@@ -34,7 +34,7 @@ export default function Home() {
       </section>
 
       <section className="wrap section">
-        <div className="section-head"><h2>Velg sykkeltype</h2><span className="mono muted">{products.length} modeller</span></div>
+        <div className="section-head"><h2>Velg sykkeltype</h2><span className="mono muted">{listed.length} modeller</span></div>
         <div className="tiles">
           {CATEGORY_IDS.map((c) => {
             const p = firstAvailable(c);

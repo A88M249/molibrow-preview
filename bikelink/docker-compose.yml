@@ -1,0 +1,30 @@
+# Local / preview stack: docker compose up --build   (web :3000, API :4000, Postgres :5432)
+# Then load the catalogue once:  docker compose run --rm seed
+services:
+  db:
+    image: postgres:16-alpine
+    environment: { POSTGRES_PASSWORD: bikelink, POSTGRES_DB: bikelink }
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U postgres"], interval: 3s, retries: 20 }
+  api:
+    build: ./backend
+    env_file: ./backend/.env
+    environment: { DATABASE_URL: "postgres://postgres:bikelink@db:5432/bikelink" }
+    ports: ["4000:4000"]
+    depends_on: { db: { condition: service_healthy } }
+  web:
+    build:
+      context: ./web
+      args: { NEXT_PUBLIC_SITE_URL: "http://localhost:3000", NEXT_PUBLIC_API_URL: "http://localhost:4000" }
+    ports: ["3000:3000"]
+  seed:
+    profiles: ["tools"]
+    image: node:22-alpine
+    working_dir: /repo/backend
+    volumes: ["./:/repo"]
+    environment: { DATABASE_URL: "postgres://postgres:bikelink@db:5432/bikelink" }
+    command: sh -c "npm ci && npm run seed"
+    depends_on: { db: { condition: service_healthy } }
+volumes: { pgdata: {} }

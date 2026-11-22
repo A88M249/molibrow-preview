@@ -8,6 +8,8 @@ export type Product = {
   family: string;
   description: string;
   needsReview: boolean;
+  modelKey: string;
+  duplicateOf?: string;
   updatedAt: string;
   colour: string | null;
   images: { src: string; width: number; height: number; alt: string | null }[];
@@ -56,10 +58,27 @@ export const CATEGORIES: Record<CategoryId, { name: string; noun: string; title:
 
 export const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[];
 
-export const products = raw as Product[];
+/** Every product in the feed, including duplicate listings. */
+export const allProducts = raw as Product[];
+/** Sellable products: duplicate Shopify listings are removed (their URLs redirect to the original). */
+export const products = allProducts.filter((p) => !p.duplicateOf);
 
 export const byHandle = (h: string) => products.find((p) => p.handle === h);
-export const inCategory = (c: CategoryId) => products.filter((p) => p.category === c);
+
+/** Other colourways of the same model (e.g. "Aelion 30" in Chalk White and Warm Steelgrey). */
+export const siblings = (p: Product) => products.filter((x) => x.modelKey === p.modelKey && x.handle !== p.handle);
+
+/** One entry per model for listings: the regular colourway, not a draft. */
+export const listed = (() => {
+  const seen = new Set<string>();
+  const primaries = [...products].sort((a, b) => Number(a.needsReview) - Number(b.needsReview));
+  return primaries.filter((p) => (seen.has(p.modelKey) ? false : (seen.add(p.modelKey), true)))
+    .sort((a, b) => products.indexOf(a) - products.indexOf(b));
+})();
+export const inCategory = (c: CategoryId) => listed.filter((p) => p.category === c);
+
+/** Own description, else a sibling colourway's, else a factual summary. Never shows internal notes. */
+export const describe = (p: Product) => p.description || siblings(p).find((x) => x.description)?.description || productSummary(p);
 export const familiesIn = (c: CategoryId) => [...new Set(inCategory(c).map((p) => p.family))].sort();
 
 export const priceRange = (p: Product) => {

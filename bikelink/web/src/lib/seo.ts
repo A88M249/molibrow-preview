@@ -1,4 +1,4 @@
-import { CATEGORIES, type CategoryId, type Product, compareAt, isAvailable, priceRange, productSummary } from "./products";
+import { CATEGORIES, type CategoryId, type Product, compareAt, describe, isAvailable, priceRange, siblings } from "./products";
 
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://bikelink.no").replace(/\/$/, "");
 export const SITE_NAME = "BikeLink";
@@ -8,6 +8,10 @@ export const categoryPath = (c: CategoryId) => `/${c}`;
 export const productPath = (p: Product) => `/sykkel/${p.handle}`;
 
 const json = (o: unknown) => o;
+
+/** Title without the trailing colour name: "MMR Aelion 30 Warm Steelgrey" -> "MMR Aelion 30". */
+export const modelName = (p: Product) =>
+  p.colour && p.title.toLowerCase().endsWith(p.colour.toLowerCase()) ? p.title.slice(0, -p.colour.length).trim() : p.title;
 
 export const organizationLd = json({
   "@context": "https://schema.org",
@@ -50,11 +54,12 @@ export function productLd(p: Product) {
     "@type": "Product",
     "@id": abs(productPath(p)) + "#product",
     name: p.title,
-    description: p.description || productSummary(p),
+    description: describe(p),
     image: p.images.map((i) => i.src),
     sku: p.variants[0]?.sku,
     category: CATEGORIES[p.category].title,
     color: p.colour ?? undefined,
+    ...(siblings(p).length ? { isVariantOf: { "@type": "ProductGroup", productGroupID: p.modelKey, name: modelName(p), variesBy: "https://schema.org/color" } } : {}),
     brand: { "@type": "Brand", name: "MMR Bikes" },
     url: abs(productPath(p)),
     offers: {

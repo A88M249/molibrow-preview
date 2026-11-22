@@ -44,3 +44,27 @@ on a plain background). The product page then shows a drag / swipe / arrow-key v
 Cart (browser) → `POST {NEXT_PUBLIC_API_URL}/checkout` with `{ provider, email, delivery, items: [{ sku, quantity }] }`.
 The backend re-prices every SKU from Postgres. Load the catalogue with `cd backend && npm run seed`.
 Seed sets stock to 1 for available variants (Shopify's public feed has no stock counts) – load real stock before launch.
+
+## Back-office API, email, redirects, tests, deploy
+
+**Admin API** (disabled unless `ADMIN_TOKEN` is set; `Authorization: Bearer <token>`):
+`GET /admin/orders?status=paid` · `GET /admin/orders/:id` · `POST /admin/orders/:id/fulfil` · `PUT /admin/stock/:sku {"stock": 3}`
+
+**Order emails**: set `SMTP_URL` (+ `MAIL_FROM`) and a Norwegian confirmation is sent the first time an order is confirmed paid.
+
+**Old Shopify URLs**: `npm run redirects` (web) rebuilds `data/redirects.json` from the live sitemap. `/products/*` → `/sykkel/*` (same handles),
+31 collections → matching category/family, duplicate listings → the original. Pages that are not migrated yet
+(`/pages/b2b`, `/pages/bike-exchange`, `/policies/*`) must stay on the old shop or be rebuilt before the domain moves.
+
+**Tests**: `cd web && npm test` (data rules: unique SKUs, no internal notes, no duplicate models, redirects valid).
+`cd backend && DATABASE_URL=postgres://…/bikelink_test npm test` (API against real Postgres; refuses databases not named *test*).
+CI: `.github/workflows/bikelink.yml`.
+
+**Run everything locally**: `cp backend/.env.example backend/.env` (fill keys) → `docker compose up --build` → `docker compose run --rm seed`.
+(Dockerfiles/compose are written but have not been run in this environment.)
+
+## Catalogue facts (found during import)
+- 71 Shopify products = 69 real products + 2 duplicate listings (`…-copy`, `…-1`). Only 5 are real colour variants of another product; they are
+  grouped under one card with a colour switcher. All other products are separate model/spec levels (Aelion 00/10/30/50 …).
+- 7 products had internal admin notes as their public description (never shown by the new site, see `needsReview`).
+- 3 variants had no SKU and 14 shared SKUs; the export makes SKUs unique. Fix them in Shopify too.

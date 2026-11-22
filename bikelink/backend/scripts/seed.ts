@@ -3,12 +3,14 @@
 import { readFileSync } from "node:fs";
 import pg from "pg";
 
-type P = { handle: string; title: string; description: string; images: { src: string }[]; variants: { sku: string; size: string | null; priceOre: number; available: boolean }[] };
+type P = { duplicateOf?: string; handle: string; title: string; description: string; images: { src: string }[]; variants: { sku: string; size: string | null; priceOre: number; available: boolean }[] };
 const products: P[] = JSON.parse(readFileSync(new URL("../../web/data/products.json", import.meta.url), "utf8"));
 
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 let rows = 0, skipped = 0;
+const seen: string[] = [];
 for (const p of products) {
+  if (p.duplicateOf) continue; // duplicate Shopify listing – the original is seeded instead
   for (const v of p.variants) {
     if (!v.sku) { skipped++; continue; }
     // Shopify's public feed has no stock counts: available = 1 unit. Replace with real inventory before launch.
@@ -18,8 +20,11 @@ for (const p of products) {
        ON CONFLICT (sku) DO UPDATE SET slug=$2, name=$3, size=$4, description=$5, price_ore=$6, image_url=$8`,
       [v.sku, p.handle, p.title, v.size, p.description, v.priceOre, v.available ? 1 : 0, p.images[0]?.src ?? null],
     );
+    seen.push(v.sku);
     rows++;
   }
 }
+// Anything that disappeared from the catalogue stops being sellable (rows are kept for old orders).
+const { rowCount: deactivated } = await pool.query("UPDATE products SET active = false WHERE sku <> ALL($1) AND active", [seen]);
 await pool.end();
-console.log(`Seeded ${rows} variants (${skipped} skipped: no SKU). NOTE: stock is 1 for available variants – set real stock.`);
+console.log(`Seeded ${rows} variants (${skipped} skipped: no SKU, ${deactivated} deactivated). NOTE: stock is 1 for available variants – set real stock.`);

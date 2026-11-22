@@ -32,6 +32,7 @@ export function MobileMenu({ menu }: { menu: Item[] }) {
               </ul>
             </details>
           ))}
+          <Link className="drawer-link" href="/sok" onClick={close}>Søk</Link>
           <Link className="drawer-link" href="/forhandlere" onClick={close}>Forhandlere</Link>
           <Link className="drawer-link" href="/service" onClick={close}>Service og garanti</Link>
           <Link className="drawer-link" href="/om-oss" onClick={close}>Om oss</Link>

@@ -15,7 +15,7 @@ CREATE INDEX IF NOT EXISTS products_slug_idx ON products (slug);
 
 CREATE TABLE IF NOT EXISTS orders (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  status          TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','paid','cancelled')),
+  status          TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','paid','fulfilled','cancelled')),
   provider        TEXT NOT NULL CHECK (provider IN ('stripe','vipps')),
   email           TEXT NOT NULL,
   total_ore       INTEGER NOT NULL,

@@ -55,7 +55,7 @@ export async function setProviderRef(orderId: string, ref: string) {
  * Mark an order paid and take stock. Safe to call twice: only the first call
  * (status still 'pending') changes anything.
  */
-export async function markPaid(orderId: string): Promise<void> {
+export async function markPaid(orderId: string): Promise<boolean> {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
@@ -71,6 +71,7 @@ export async function markPaid(orderId: string): Promise<void> {
       );
     }
     await client.query("COMMIT");
+    return Boolean(rowCount);
   } catch (e) {
     await client.query("ROLLBACK");
     throw e;

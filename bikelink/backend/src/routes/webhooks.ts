@@ -3,6 +3,7 @@ import { config } from "../config.js";
 import { markPaid } from "../orders.js";
 import { stripe } from "../payments/stripe.js";
 import { isVippsAuthorized } from "../payments/vipps.js";
+import { sendOrderConfirmation } from "../mail.js";
 
 export async function webhookRoutes(app: FastifyInstance) {
   // Stripe needs the exact raw bytes to verify the signature.
@@ -25,7 +26,7 @@ export async function webhookRoutes(app: FastifyInstance) {
       event.type === "checkout.session.async_payment_succeeded"
     ) {
       const s = event.data.object;
-      if (s.payment_status === "paid" && s.client_reference_id) await markPaid(s.client_reference_id);
+      if (s.payment_status === "paid" && s.client_reference_id && (await markPaid(s.client_reference_id))) await sendOrderConfirmation(s.client_reference_id);
     }
     return { received: true };
   });
@@ -34,7 +35,7 @@ export async function webhookRoutes(app: FastifyInstance) {
   app.post("/webhooks/vipps", async (req, reply) => {
     const ref = (JSON.parse((req.body as Buffer).toString()) as { reference?: string }).reference;
     if (!ref || !/^[0-9a-f-]{36}$/i.test(ref)) return reply.code(400).send({ error: "Bad reference" });
-    if (await isVippsAuthorized(ref)) await markPaid(ref);
+    if ((await isVippsAuthorized(ref)) && (await markPaid(ref))) await sendOrderConfirmation(ref);
     return { received: true };
   });
 }

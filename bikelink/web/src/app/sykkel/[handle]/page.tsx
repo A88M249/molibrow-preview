@@ -7,7 +7,7 @@ import { Spin360 } from "@/components/Spin360";
 import { spinFrames } from "@/lib/spin";
 import { JsonLd } from "@/components/JsonLd";
 import { ProductCard } from "@/components/ProductCard";
-import { CATEGORIES, byHandle, compareAt, isAvailable, kr, priceRange, productSummary, products } from "@/lib/products";
+import { CATEGORIES, byHandle, compareAt, describe, isAvailable, kr, listed, priceRange, products, siblings } from "@/lib/products";
 import { abs, breadcrumbLd, categoryPath, productLd, productPath } from "@/lib/seo";
 
 type Props = { params: Promise<{ handle: string }> };
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = byHandle(handle);
   if (!p) return {};
   const { low } = priceRange(p);
-  const description = snippet(`${p.description || productSummary(p)}`) ;
+  const description = snippet(describe(p));
   const title = `${p.title} – ${CATEGORIES[p.category].noun} fra ${kr(low)}`;
   return {
     title,
@@ -40,9 +40,10 @@ export default async function ProductPage({ params }: Props) {
   const cat = CATEGORIES[p.category];
   const { low, high } = priceRange(p);
   const was = compareAt(p);
-  const text = p.description || productSummary(p);
+  const text = describe(p);
+  const colourways = [p, ...siblings(p)];
   const frames = spinFrames(p.handle);
-  const siblings = products.filter((x) => x.family === p.family && x.handle !== p.handle && x.category === p.category).slice(0, 4);
+  const related = listed.filter((x) => x.family === p.family && x.modelKey !== p.modelKey && x.category === p.category).slice(0, 4);
 
   return (
     <div className="wrap section">
@@ -68,6 +69,13 @@ export default async function ProductPage({ params }: Props) {
           <p className="eyebrow">MMR Bikes · {cat.name}</p>
           <h1>{p.title}</h1>
           {p.colour && <p className="muted">Farge: {p.colour}</p>}
+          {colourways.length > 1 && (
+            <ul className="colours" aria-label="Velg farge">
+              {colourways.map((c) => (
+                <li key={c.handle}><Link href={productPath(c)} aria-current={c.handle === p.handle ? "page" : undefined} className={c.handle === p.handle ? "on" : ""}>{c.colour ?? c.title}</Link></li>
+              ))}
+            </ul>
+          )}
           <p className="price big">{kr(low)}{high !== low && <span className="muted"> – {kr(high)}</span>} {was && <s>{kr(was)}</s>}</p>
           <p className="muted small">Inkl. mva. Frakt er inkludert i prisen.</p>
           <BuyPanel handle={p.handle} title={p.title} image={p.images[0]?.src ?? null} variants={p.variants.map((v) => ({ sku: v.sku, size: v.size, priceOre: v.priceOre, available: v.available }))} />
@@ -85,10 +93,10 @@ export default async function ProductPage({ params }: Props) {
         {paragraphs(text).map((t, i) => <p key={i}>{t.trim()}</p>)}
       </section>
 
-      {siblings.length > 0 && (
+      {related.length > 0 && (
         <section id="flere">
           <h2 className="family">Flere i MMR {p.family}</h2>
-          <div className="grid">{siblings.map((s) => <ProductCard key={s.handle} p={s} />)}</div>
+          <div className="grid">{related.map((s) => <ProductCard key={s.handle} p={s} />)}</div>
         </section>
       )}
     </div>

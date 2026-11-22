@@ -1,0 +1,162 @@
+[
+ {
+  "source": "/collections/landeveissykkel",
+  "destination": "/landevei"
+ },
+ {
+  "source": "/collections/gravelsykkel",
+  "destination": "/gravel"
+ },
+ {
+  "source": "/collections/terrengsykkel",
+  "destination": "/terreng"
+ },
+ {
+  "source": "/collections/elsykkel",
+  "destination": "/elsykkel"
+ },
+ {
+  "source": "/collections/last-piece-sale-siste-sjanse-pa-premium-sykler-utstyr-bikelink-no",
+  "destination": "/"
+ },
+ {
+  "source": "/collections/mmr-bikes-2025-spansk-ingeniorkunst-og-premium-ytelse-for-ambisiose-syklister",
+  "destination": "/"
+ },
+ {
+  "source": "/collections/sykkelutstyr-og-sykler",
+  "destination": "/"
+ },
+ {
+  "source": "/collections/mmr-adrenaline-sl-landeveissykler",
+  "destination": "/landevei#adrenaline-sl"
+ },
+ {
+  "source": "/collections/mmr-aelion-sl-premium-karbon-landeveissykler",
+  "destination": "/landevei#aelion-sl"
+ },
+ {
+  "source": "/collections/mmr-adrenaline-karbon-landeveissykler",
+  "destination": "/landevei#adrenaline"
+ },
+ {
+  "source": "/collections/mmr-aelion-premium-karbon-landeveissykler",
+  "destination": "/landevei#aelion"
+ },
+ {
+  "source": "/collections/mmr-grand-tour",
+  "destination": "/landevei#grand"
+ },
+ {
+  "source": "/collections/mmr-grip-komfortable-endurance-landeveissykler",
+  "destination": "/landevei#grip"
+ },
+ {
+  "source": "/collections/mmr-simun-karbon-grussykler",
+  "destination": "/gravel#simun"
+ },
+ {
+  "source": "/collections/mmr-x-tour",
+  "destination": "/gravel#x-tour"
+ },
+ {
+  "source": "/collections/mmr-kenta-sl-karbon-fulldempede-xc-terrengsykler",
+  "destination": "/terreng#kenta-sl"
+ },
+ {
+  "source": "/collections/mmr-rakish-sl-karbon-hardtail-xc-terrengsykler",
+  "destination": "/terreng#rakish-sl"
+ },
+ {
+  "source": "/collections/mmr-kenta-fulldempede-xc-terrengsykler",
+  "destination": "/terreng#kenta"
+ },
+ {
+  "source": "/collections/mmr-rakish-hardtail-terrengsykler-for-xc-og-stisykling",
+  "destination": "/terreng#rakish"
+ },
+ {
+  "source": "/collections/mmr-zen-terrengsykler-for-aktiv-sykling-og-eventyr",
+  "destination": "/terreng#zen"
+ },
+ {
+  "source": "/collections/mmr-quercus-150-enduro-terrengsykler-for-maksimal-kontroll",
+  "destination": "/elsykkel#quercus"
+ },
+ {
+  "source": "/collections/mmr-x-beat-elektriske-grussykler-for-eventyr-og-hverdag",
+  "destination": "/elsykkel#x-beat"
+ },
+ {
+  "source": "/collections/mmr-e-woki-elektriske-terrengsykler-for-hverdag-og-eventyr",
+  "destination": "/elsykkel#e-woki"
+ },
+ {
+  "source": "/collections/mmr-beat-elektriske-landeveissykler-med-naturlig-kjorefolelse",
+  "destination": "/elsykkel#beat"
+ },
+ {
+  "source": "/collections/mmr-x-grip-allsidige-gravelsykler",
+  "destination": "/gravel#x-grip"
+ },
+ {
+  "source": "/collections/tour-de-france-sale",
+  "destination": "/"
+ },
+ {
+  "source": "/collections/mmr-kenta-cross-country-terrengsykler",
+  "destination": "/terreng#kenta"
+ },
+ {
+  "source": "/collections/mmr-woki-terrengsykler-for-nye-eventyr-1",
+  "destination": "/terreng#woki"
+ },
+ {
+  "source": "/collections/summer-sale",
+  "destination": "/"
+ },
+ {
+  "source": "/collections/mmr-lyth",
+  "destination": "/elsykkel#lyth"
+ },
+ {
+  "source": "/collections/mmr-q-power",
+  "destination": "/elsykkel#q"
+ },
+ {
+  "source": "/collections/mmr-barnesykler",
+  "destination": "/barn"
+ },
+ {
+  "source": "/collections",
+  "destination": "/"
+ },
+ {
+  "source": "/collections/all",
+  "destination": "/"
+ },
+ {
+  "source": "/pages/service",
+  "destination": "/service"
+ },
+ {
+  "source": "/pages/service-locations",
+  "destination": "/forhandlere"
+ },
+ {
+  "source": "/pages/showroom-partners",
+  "destination": "/forhandlere"
+ },
+ {
+  "source": "/pages/dette-er-bikelink-no",
+  "destination": "/om-oss"
+ },
+ {
+  "source": "/pages/contact",
+  "destination": "/kontakt"
+ },
+ {
+  "source": "/cart",
+  "destination": "/handlekurv"
+ }
+]

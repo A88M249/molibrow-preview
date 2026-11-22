@@ -73,6 +73,25 @@ for (const p of products) {
     })),
   });
 }
+// Model key = title without a trailing colour name, so "Aelion 30" and "Aelion 30 Warm Steelgrey" belong together.
+const norm = (t) => t.toLowerCase().replace(/^mmr\s+/, "").replace(/\s+/g, " ").trim();
+const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const seenTitle = new Map();
+for (const p of out) {
+  let key = norm(p.title);
+  if (p.colour) key = key.replace(new RegExp(`\\s+${esc(norm(p.colour))}$`), "");
+  p.modelKey = key;
+  const dupKey = `${norm(p.title)}|${norm(p.colour ?? "")}`;
+  if (seenTitle.has(dupKey)) {
+    // Shopify names copies "...-copy" or appends a single digit ("...-1"): the other handle is the original.
+    const isCopy = (h) => /-copy$|-\d$/.test(h);
+    const first = out.find((x) => x.handle === seenTitle.get(dupKey));
+    const [orig, dup] = isCopy(first.handle) && !isCopy(p.handle) ? [p, first] : [first, p];
+    dup.duplicateOf = orig.handle;
+    seenTitle.set(dupKey, orig.handle);
+    console.warn(`duplicate product: ${dup.handle} duplicates ${orig.handle}`);
+  } else seenTitle.set(dupKey, p.handle);
+}
 await writeFile(new URL("../data/products.json", import.meta.url), JSON.stringify(out));
 console.log(`Wrote ${out.length} products`);
 if (skuIssues.length) console.warn(`\n${skuIssues.length} SKU problems fixed in the export (fix them in Shopify too):\n  ` + skuIssues.join("\n  "));
