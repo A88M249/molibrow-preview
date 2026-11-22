@@ -25,3 +25,13 @@ npm install
 psql "$DATABASE_URL" -f sql/schema.sql
 npm run dev
 ```
+
+## Storefront (web/)
+Next.js, fully static (SSG) – every page is plain HTML for crawlers and AI agents.
+```
+cd web && npm install
+npm run import     # refresh data/products.json from the live Shopify store
+npm run dev
+```
+SEO / AI-search features: JSON-LD (Organization, WebSite, Product+Offer, BreadcrumbList, CollectionPage/ItemList),
+canonical URLs, sitemap.xml, robots.txt (AI crawlers allowed), `/llms.txt`, Google Merchant feed `/feed.xml`.
