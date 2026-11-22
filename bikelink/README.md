@@ -97,7 +97,7 @@ Forgot password: `/b2b/glemt`.
 If email (`SMTP_URL`) is not set up, invite links are shown on screen so you can send them yourself.
 
 **B2B pricing across the site:** an approved partner is marked **B2B**. When signed in (portal login) the whole shop switches to their price **excl. VAT**: a red B2B bar on every page, "B2B fra …" on product cards,
-a "Din B2B-pris" box on product pages, and dealers order via the portal instead of the retail cart. Anonymous visitors never receive these prices (they are fetched with the partner's token, not part of the public pages).
+a "Din B2B-pris" box on product pages, and dealers order via the portal instead of the retail cart. Every price view shows the **recommended retail price (incl. and excl. VAT), the B2B price excl. and incl. VAT, and the dealer's margin** (kr and % of the selling price excl. VAT; the order summary shows the margin of the whole order at recommended prices). Anonymous visitors never receive these prices (they are fetched with the partner's token, not part of the public pages).
 
 Security notes: passwords are scrypt-hashed; login tokens are HS256 JWTs valid 12 h, kept in sessionStorage; closing an account blocks its token immediately;
 login/apply/forgot are rate limited; forgot-password never reveals whether an email exists; 

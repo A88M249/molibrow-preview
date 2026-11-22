@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { API, ApiError, DEALER_KEY, api, dealerLogout, getToken, kr, setToken } from "@/lib/b2b";
+import { API, ApiError, DEALER_KEY, api, dealerLogout, getToken, kr, pct, priceBreakdown, setToken } from "@/lib/b2b";
 
 type Dealer = { company: string; contactName: string; discountPct: number };
 type Item = { sku: string; slug: string; priceOre: number; retailOre: number };
@@ -75,20 +75,27 @@ export function DealerFrom({ slug }: { slug: string }) {
   const { dealer, from } = useDealer();
   const f = dealer ? from(slug) : null;
   if (!f) return null;
-  return <p className="mono dealer-price">B2B fra {kr(f.priceOre)} eks. mva</p>;
+  const b = priceBreakdown(f.retailOre, f.priceOre);
+  return <p className="mono dealer-price">B2B fra {kr(f.priceOre)} eks. mva · margin {pct(b.marginPct)}</p>;
 }
 
-/** B2B price block on the product page, under the retail price. */
+/** B2B price block on the product page: recommended retail price, B2B price excl./incl. VAT, and the dealer's margin. */
 export function DealerPriceBlock({ slug }: { slug: string }) {
   const { dealer, from } = useDealer();
   const f = dealer ? from(slug) : null;
   if (!dealer || !f) return null;
-  const saving = Math.round(f.retailOre / 1.25) - f.priceOre; // vs. retail excl. VAT
+  const b = priceBreakdown(f.retailOre, f.priceOre);
   return (
     <div className="dealer-block" aria-label="B2B-pris">
       <p className="mono">Din B2B-pris</p>
-      <p className="price big">{kr(f.priceOre)} <span className="small muted">eks. mva</span></p>
-      <p className="small muted">Veil. pris {kr(Math.round(f.retailOre / 1.25))} eks. mva{saving > 0 ? ` · du sparer ${kr(saving)}` : ""} · din pris inkl. 25 % mva: {kr(Math.round(f.priceOre * 1.25))}</p>
+      <p className="price big">{kr(b.b2bExVatOre)} <span className="small muted">eks. mva</span></p>
+      <dl className="dealer-grid">
+        <dt>B2B-pris inkl. 25 % mva</dt><dd>{kr(b.b2bIncVatOre)}</dd>
+        <dt>Veil. utsalgspris inkl. mva</dt><dd>{kr(b.retailIncVatOre)}</dd>
+        <dt>Veil. utsalgspris eks. mva</dt><dd>{kr(b.retailExVatOre)}</dd>
+        <dt>Din margin</dt><dd className={b.marginOre < 0 ? "neg" : "pos"}><strong>{kr(b.marginOre)}</strong> · {pct(b.marginPct)}</dd>
+      </dl>
+      <p className="small muted">Margin = veil. utsalgspris eks. mva − din B2B-pris, i % av utsalgsprisen (påslag på innkjøp: {pct(b.markupPct)}). Prisen kan variere mellom størrelser – eksakt pris vises i portalen.</p>
     </div>
   );
 }

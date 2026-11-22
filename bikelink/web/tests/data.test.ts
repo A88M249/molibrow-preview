@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { parsePriceList } from "../src/lib/b2b";
+import { parsePriceList, priceBreakdown } from "../src/lib/b2b";
 import { CATEGORY_IDS, allProducts, describe, inCategory, kr, listed, products, siblings } from "../src/lib/products";
 
 const INTERNAL = /\bSKU\b|lager \d|Shopify|utkast|Fargevei/i;
@@ -65,4 +65,14 @@ test("sync-stock: availability follows the API, unknown SKUs are left alone", as
   assert.deepEqual(r.products[0].variants.map((v: { available: boolean }) => v.available), [false, true, true]);
   assert.equal(r.changed, 2); assert.equal(r.known, 2);
   assert.equal(products[0].variants[0].available, true, "input is not mutated");
+});
+
+test("B2B price breakdown: ex/incl. VAT and the dealer's margin at the recommended retail price", () => {
+  const b = priceBreakdown(5899000, 3775400); // 58 990 kr retail incl. VAT, B2B 37 754 kr excl. VAT
+  assert.equal(b.retailExVatOre, 4719200);
+  assert.equal(b.b2bIncVatOre, 4719250);
+  assert.equal(b.marginOre, 943800);
+  assert.ok(Math.abs(b.marginPct - 20) < 0.01, "20 % of the selling price");
+  assert.ok(Math.abs(b.markupPct - 25) < 0.01, "= 25 % mark-up on cost");
+  assert.ok(priceBreakdown(1000000, 900000).marginOre < 0, "a B2B price above the retail price shows as negative margin");
 });

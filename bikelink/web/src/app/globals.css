@@ -268,3 +268,5 @@ body.has-dealer{--bar:34px}
 .dealer-price{color:var(--accent);margin:2px 0 0;font-weight:500}
 .dealer-block{border:1px solid var(--accent);background:#fff;padding:16px 20px;margin:16px 0}.dealer-block .price.big{margin:.2rem 0;color:var(--accent)}.dealer-block p{margin:0 0 4px}
 @media(max-width:700px){.dealer-bar{padding:8px 20px;font-size:.62rem;flex-wrap:nowrap;overflow:hidden;white-space:nowrap}.dealer-bar span:last-child{display:none}}
+.dealer-grid{display:grid;grid-template-columns:1fr auto;gap:6px 16px;margin:10px 0;font-size:.92rem}.dealer-grid dt{color:var(--muted)}.dealer-grid dd{margin:0;text-align:right}
+.pos strong{color:var(--ok)}.neg,.neg strong{color:var(--accent)}

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ApiError, DEALER_KEY, STATUS_NO, announceDealerChange, api, dateTime, getToken, kr, krDec, setToken } from "@/lib/b2b";
+import { ApiError, DEALER_KEY, STATUS_NO, announceDealerChange, api, dateTime, getToken, kr, krDec, pct, priceBreakdown, setToken } from "@/lib/b2b";
 
 type Me = { company: string; contactName: string; email: string; address: string; discountPct: number };
 type Row = { sku: string; slug: string; name: string; size: string | null; stock: number; retailOre: number; priceOre: number };
@@ -74,6 +74,7 @@ function Catalog({ token, me, rows, stockAt, onOrdered, guard }: { token: string
   }, [rows, q, onlyStock]);
   const lines = rows.filter((r) => (qty[r.sku] ?? 0) > 0);
   const sub = lines.reduce((s, r) => s + r.priceOre * (qty[r.sku] ?? 0), 0);
+  const resale = lines.reduce((s, r) => s + priceBreakdown(r.retailOre, r.priceOre).retailExVatOre * (qty[r.sku] ?? 0), 0); // what the order sells for at recommended prices, excl. VAT
   const units = lines.reduce((s, r) => s + (qty[r.sku] ?? 0), 0);
 
   async function submit() {
@@ -93,10 +94,10 @@ function Catalog({ token, me, rows, stockAt, onOrdered, guard }: { token: string
         <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Søk modell, størrelse eller SKU" aria-label="Søk" />
         <label className="opt"><input type="checkbox" checked={onlyStock} onChange={(e) => setOnlyStock(e.target.checked)} /> Kun på lager</label>
       </div>
-      <p className="mono muted small">Priser er eks. mva. {stockAt ? `Lager sist oppdatert ${dateTime(stockAt)}.` : "Lagerstatus oppdateres daglig."} {shown.length} varianter</p>
+      <p className="mono muted small">B2B-pris vises eks. og inkl. mva. Margin = veil. utsalgspris eks. mva − din B2B-pris, og i % av utsalgsprisen. {stockAt ? `Lager sist oppdatert ${dateTime(stockAt)}.` : "Lagerstatus oppdateres daglig."} {shown.length} varianter</p>
       <div className="table-wrap">
         <table className="table">
-          <thead><tr><th>Modell</th><th>Str.</th><th className="num">Veil. inkl. mva</th><th className="num">Din pris eks. mva</th><th className="num">Lager</th><th className="num">Antall</th></tr></thead>
+          <thead><tr><th>Modell</th><th>Str.</th><th className="num">Veil. utsalgspris inkl. mva</th><th className="num">B2B-pris eks. mva</th><th className="num">B2B-pris inkl. mva</th><th className="num">Margin</th><th className="num">Lager</th><th className="num">Antall</th></tr></thead>
           <tbody>
             {shown.map((r) => (
               <tr key={r.sku} className={r.stock === 0 ? "off" : ""}>
@@ -104,6 +105,8 @@ function Catalog({ token, me, rows, stockAt, onOrdered, guard }: { token: string
                 <td>{r.size ?? "–"}</td>
                 <td className="num muted">{kr(r.retailOre)}</td>
                 <td className="num"><strong>{kr(r.priceOre)}</strong></td>
+                <td className="num muted">{kr(Math.round(r.priceOre * (1 + VAT)))}</td>
+                <td className={`num ${priceBreakdown(r.retailOre, r.priceOre).marginOre < 0 ? "neg" : ""}`}>{kr(priceBreakdown(r.retailOre, r.priceOre).marginOre)} <small className="muted">· {pct(priceBreakdown(r.retailOre, r.priceOre).marginPct)}</small></td>
                 <td className="num">{r.stock === 0 ? "Utsolgt" : r.stock}</td>
                 <td className="num"><input className="qty-in" type="number" min={0} max={r.stock} disabled={r.stock === 0} value={qty[r.sku] ?? ""} placeholder="0" aria-label={`Antall ${r.name} ${r.size ?? ""}`}
                   onChange={(e) => setQty({ ...qty, [r.sku]: Math.max(0, Math.min(r.stock, Number(e.target.value) || 0)) })} /></td>
@@ -123,6 +126,7 @@ function Catalog({ token, me, rows, stockAt, onOrdered, guard }: { token: string
           <p className="mono">{units} enheter · {lines.length} varianter</p>
           <p>Sum eks. mva <strong>{krDec(sub)}</strong></p>
           <p className="muted small">Mva 25 % {krDec(Math.round(sub * VAT))} · inkl. mva {krDec(Math.round(sub * (1 + VAT)))}</p>
+          {units > 0 && <p className="small">Margin ved salg til veil. pris: <strong>{kr(resale - sub)}</strong> · {pct(resale > 0 ? ((resale - sub) / resale) * 100 : 0)} <span className="muted">(utsalg eks. mva {kr(resale)})</span></p>}
           {msg && <p className="error" role="alert">{msg}</p>}
           <button className="btn" disabled={!units || busy || !address.trim()} onClick={submit}>{busy ? "Sender …" : "Legg inn ordre"}</button>
           <p className="small muted">Lager reserveres straks. Faktura etter avtale.</p>

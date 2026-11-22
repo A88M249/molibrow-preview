@@ -69,3 +69,24 @@ export const fileToBase64 = (file: File): Promise<string> =>
 /** Tell the rest of the page that the dealer signed in or out (the price provider reloads). */
 export const announceDealerChange = () => { try { window.dispatchEvent(new Event("bikelink-dealer-change")); } catch { /* ignore */ } };
 export const dealerLogout = () => { setToken(DEALER_KEY, null); try { sessionStorage.removeItem("bikelink-b2b-catalog"); } catch { /* ignore */ } announceDealerChange(); };
+
+export const VAT_RATE = 0.25;
+
+/**
+ * What a dealer needs to see per product. The dealer sells at the recommended retail price (incl. VAT);
+ * margin = that price excl. VAT − the dealer's B2B price excl. VAT, also as a share of the selling price (and as mark-up on cost).
+ */
+export function priceBreakdown(retailIncVatOre: number, b2bExVatOre: number) {
+  const retailExVatOre = Math.round(retailIncVatOre / (1 + VAT_RATE));
+  const marginOre = retailExVatOre - b2bExVatOre;
+  return {
+    retailIncVatOre,
+    retailExVatOre,
+    b2bExVatOre,
+    b2bIncVatOre: Math.round(b2bExVatOre * (1 + VAT_RATE)),
+    marginOre,
+    marginPct: retailExVatOre > 0 ? (marginOre / retailExVatOre) * 100 : 0,
+    markupPct: b2bExVatOre > 0 ? (marginOre / b2bExVatOre) * 100 : 0,
+  };
+}
+export const pct = (n: number) => `${new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 1 }).format(n)} %`;
